@@ -1,12 +1,22 @@
 <div class="container">
-  <div class="col-md-8 col-md-offset-2">
-    <form id="chooseAnimal">
-      <label for="selectAnimal">Type of animal to get:</label>
-      <select name="selectAnimal" ng-model="animalType" ng-options="animal as
-        animal for animal in animalTypes"></select>
-      <button ng-click="getRandomPet()">Bring me an animal!</button>
-      <span>Favorite count: {{faves.length}}</span>
+    <form id="setup">
+      <div class="col-md-4">
+        <label for="address">Address:</label>
+        <input type="text" name="address" maxlength="200" ng-model="address.address" />
+      </div>
+      <div class="row">
+        <label for="phone">Phone:</label>
+        <input type="text" name="address" maxlength="200" ng-model="phone" />
+        <label for="blockAlertsStart">Block alerts between</label>
+        <select name="blockAlertsStart" ng-model="startBlock" ng-options="hour.label as
+          hour.time for hour in fullDay"></select>
+        <label for="blockAlertsEnd">and</label>
+        <select name="blockAlertsEnd" ng-model="endBlock" ng-options="hour.label as
+          hour.time for hour in fullDay"></select>
+        <button ng-click="submitAndTest()">Submit and Test</button>
+      </div>
     </form>
+<!-- SECTION TO SHOW RESULTS OF SUBMIT
     <div ng-show="animal.name.$t.length > 0">
       <h2>{{animal.name.$t}}
         <button ng-click="saveFave()">Save as Favorite</button>
@@ -16,6 +26,5 @@
         <img ng-src="{{photo.$t}}"
           alt="Image of this pet"/>
       </p>
-    </div>
-  </div>
+    </div>  -->
 </div>
