@@ -1,0 +1,21 @@
+<div class="container">
+  <div class="col-md-8 col-md-offset-2">
+    <form id="chooseAnimal">
+      <label for="selectAnimal">Type of animal to get:</label>
+      <select name="selectAnimal" ng-model="animalType" ng-options="animal as
+        animal for animal in animalTypes"></select>
+      <button ng-click="getRandomPet()">Bring me an animal!</button>
+      <span>Favorite count: {{faves.length}}</span>
+    </form>
+    <div ng-show="animal.name.$t.length > 0">
+      <h2>{{animal.name.$t}}
+        <button ng-click="saveFave()">Save as Favorite</button>
+      </h2>
+      <p>{{animal.description.$t}}</p>
+      <p ng-repeat="photo in photos" ng-if="photo['@size'] == 'x'">
+        <img ng-src="{{photo.$t}}"
+          alt="Image of this pet"/>
+      </p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+{
+  "name": "free_cooling",
+  "version": "1.0.0",
+  "description": "A full-stack application to aid taking advantage for times when opening windows will make an indoor space more comfortable.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/glydeb/free_cooling.git"
+  },
+  "author": "Glydewell Burdick",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/glydeb/free_cooling/issues"
+  },
+  "homepage": "https://github.com/glydeb/free_cooling#readme",
+  "dependencies": {
+    "angular": "^1.5.6",
+    "body-parser": "^1.15.1",
+    "express": "^4.13.4",
+    "pg": "^4.5.6"
+  }
+}

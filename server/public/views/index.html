@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Free Cooling</title>
+    <!-- Angular -->
+    <script type="text/javascript" src="/vendors/angular.min.js"></script>
+    <script type="text/javascript" src="/vendors/angular-route.min.js"></script>
+    <script type="text/javascript" src="/scripts/ang_app.js"></script>
+    <script type="text/javascript" src="/scripts/factories/dataFactory.js"></script>
+    <script type="text/javascript" src="/scripts/controllers/SetupController.js"></script>
+    <script type="text/javascript" src="/scripts/controllers/StatusController.js"></script>
+    <script type="text/javascript" src="/scripts/controllers/ReminderController.js"></script>
+
+    <link rel="stylesheet" href="/vendors/bootstrap.min.css" />
+    <link rel="stylesheet" href="/styles/style.css" />
+</head>
+
+<body ng-app="myApp">
+  <header ng-include="'/views/templates/header.html'" class="jumbotron text-center"></header>
+
+  <main ng-view></main>
+
+  <footer ng-include="'/views/templates/footer.html'"></footer>
+
+</body>
+</html>
