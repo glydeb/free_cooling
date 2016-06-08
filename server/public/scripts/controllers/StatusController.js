@@ -2,6 +2,18 @@ myApp.controller('StatusController', ['$scope', '$http', 'DataFactory', function
   console.log('StatusController online');
 /*
   $scope.dataFactory = DataFactory;
+  // SendGrid email API key
+  eMailKey = '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'
+
+  // Forecast.io API key
+  var forecastKey = 'cbd4f63ef2acb744389fa7648c5f4b4e'
+
+  // Sample textbelt text message post:
+   curl -X POST http://textbelt.com/text -d number=5551234567 -d "message=I sent this message for free with textbelt.com"
+
+  // Google API key - 'Free Cooling Key'
+  latLongKey = 'AIzaSyC2m5hJtKCJ4ENzVrqWrmWFj6yVTl3ZFnQ'
+
   var key = 'a13d573be80f54aaa3c5bfdfdf8bc460';
   var secret = '53d857e7ec5c210629b03750a5383d2d';
   var baseURL = 'http://api.petfinder.com/';

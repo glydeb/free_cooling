@@ -1,5 +1,16 @@
 myApp.factory('DataFactory', ['$http', function ($http) {
   console.log('dataFactory running');
+
+function makeid(len) {
+  var text = [];
+  var possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
+  for( var i=0; i < len; i++ ) {
+    text.push(possible.charAt(Math.floor(Math.random() * possible.length)));
+  }
+
+  return text.join();
+}
 /*
   // PRIVATE
   var favorites = undefined;
