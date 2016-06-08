@@ -1,18 +1,32 @@
 myApp.factory('DataFactory', ['$http', function ($http) {
   console.log('dataFactory running');
 
-function makeid(len) {
-  var text = [];
-  var possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  // PRIVATE
+  function makeid(len) {
+    var text = [];
+    var possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
-  for( var i=0; i < len; i++ ) {
-    text.push(possible.charAt(Math.floor(Math.random() * possible.length)));
+    for (var i = 0; i < len; i++) {
+      text.push(possible.charAt(Math.floor(Math.random() * possible.length)));
+    }
+
+    return text.join();
   }
 
-  return text.join();
-}
+  // create hour array
+  var hourList = [];
+  var postfix = ' AM';
+
+  // Fill array with hour objects
+  for (var i = 1; i < 3; i++) {
+    // if second time through, switch to PM
+    if (i === 2) { postfix = ' PM';}
+
+    for (var j = 1; j < 13; j++) {
+      hourList.push({ hour: j, label: j + postfix });
+    }
+  }
 /*
-  // PRIVATE
   var favorites = undefined;
 
   function getFaveData() {
@@ -49,23 +63,15 @@ function makeid(len) {
 
     return promise;
   }
-
+*/
   // PUBLIC
-  var publicApi = {
-    factorySaveFave: function (newFave) {
-      return saveFave(newFave);
-    },
-
-    factoryRefreshFaveData: function () {
-      return getFaveData();
-    },
-
-    factoryGetFaves: function () {
+  var product = {
+    factoryHourArray: function () {
       // return our array
-      return favorites;
+      return hourList;
     }
   };
 
-  return publicApi;
-*/
+  return product;
+
 }]);
