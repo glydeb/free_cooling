@@ -1,30 +1,74 @@
 <div class="container">
     <form id="setup">
-      <div class="col-md-4">
-        <label for="address">Address:</label>
-        <input type="text" name="address" maxlength="200" ng-model="address.address" />
+      <div class="row">
+        <div class="col-md-4">
+          <fieldset>
+            <legend>Setup Information:</legend>
+            <p>
+              <label for="email">Email:</label>
+              <input type="text" name="email" maxlength="254" ng-model="setup.email" />
+            </p>
+            <p>
+              <label for="photonID">photon ID:</label>
+              <input type="text" name="photonID" maxlength="24" ng-model="setup.photonID" />
+            </p>
+            <p>
+              <label for="accessToken">Access Token:</label>
+              <input type="text" name="accessToken" maxlength="40" ng-model="setup.accessToken" />
+            </p>
+            <p>
+              <label for="nickname">Nickname:</label>
+              <input type="text" name="nickname" maxlength="20" ng-model="setup.nickname" />
+            </p>
+          </fieldset>
+        </div>
+        <div class="col-md-4">
+          <fieldset>
+            <legend>Location:</legend>
+            <p>
+              <label for="address">Address:</label>
+              <input type="text" name="address" maxlength="200" ng-model="location.street" />
+            </p>
+            <p>
+              <label for="city">City:</label>
+              <input type="text" name="city" maxlength="200" ng-model="location.city" />
+            </p>
+            <p>
+              <label for="state">State:</label>
+              <input type="text" name="state" size="2" maxlength="2" ng-model="location.state" />
+              <label for="zip">ZIP:</label>
+              <input type="text" name="zip" size="5" maxlength="10" ng-model="location.zip" />
+            </p>
+          </fieldset>
+        </div>
       </div>
       <div class="row">
-        <label for="phone">Phone:</label>
-        <input type="text" name="address" maxlength="200" ng-model="phone" />
-        <label for="blockAlertsStart">Block alerts between</label>
-        <select name="blockAlertsStart" ng-model="startBlock" ng-options="hour.label as
-          hour.time for hour in fullDay"></select>
-        <label for="blockAlertsEnd">and</label>
-        <select name="blockAlertsEnd" ng-model="endBlock" ng-options="hour.label as
-          hour.time for hour in fullDay"></select>
+        <fieldset>
+          <legend>Alert Information:</legend>
+          <label for="phone">Phone:</label>
+          <input type="text" name="address" maxlength="200" ng-model="phone" />
+          <label for="enableAlert">Enable Alerts</label>
+          <input type="checkbox" ng-model="enableAlert"/>
+          <label for="blockAlertsStart" ng-show="enableAlert">Block alerts between</label>
+          <select name="blockAlertsStart"  ng-show="enableAlert" ng-model="startBlock" ng-options="hour.hour as
+            hour.label for hour in fullDay"></select>
+          <label for="blockAlertsEnd" ng-show="enableAlert">and</label>
+          <select name="blockAlertsEnd" ng-model="endBlock" ng-show="enableAlert" ng-options="hour.hour as
+            hour.label for hour in fullDay"></select>
+        </fieldset>
+      </div>
+      <div class="row">
         <button ng-click="submitAndTest()">Submit and Test</button>
+        <button ng-show="stored" ng-click="removeDevice(deviceID)">Remove Device</button>
       </div>
     </form>
-<!-- SECTION TO SHOW RESULTS OF SUBMIT
-    <div ng-show="animal.name.$t.length > 0">
-      <h2>{{animal.name.$t}}
-        <button ng-click="saveFave()">Save as Favorite</button>
-      </h2>
-      <p>{{animal.description.$t}}</p>
-      <p ng-repeat="photo in photos" ng-if="photo['@size'] == 'x'">
-        <img ng-src="{{photo.$t}}"
-          alt="Image of this pet"/>
-      </p>
-    </div>  -->
+    <div class="row">
+      <p><span ng-show="testPhoton">Testing link to Photon...{{testPhotonResult}}</span></p>
+      <p><span ng-show="findLocation">Querying Google API for location...{{findLocationResult}}</span></p>
+      <p><span ng-show="storeUser">Storing device &amp; user settings...{{storeUserResult}}</span></p>
+      <p><span ng-show="linkSent">Check your email for a link to the main page!</span></p>
+    </div>
+    <div class="row">
+      <h4>Lost/Forgotten link? <a href="/#/reminder">Click here</a></h4>
+    </div>
 </div>

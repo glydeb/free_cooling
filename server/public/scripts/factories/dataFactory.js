@@ -13,18 +13,17 @@ myApp.factory('DataFactory', ['$http', function ($http) {
     return text.join();
   }
 
-  // create hour array
-  var hourList = [];
-  var postfix = ' AM';
+  // create hour array and fill it
+  var hourList = create12HrArray(' AM', 1).concat(create12HrArray(' PM', 13));
 
-  // Fill array with hour objects
-  for (var i = 1; i < 3; i++) {
-    // if second time through, switch to PM
-    if (i === 2) { postfix = ' PM';}
-
-    for (var j = 1; j < 13; j++) {
-      hourList.push({ hour: j, label: j + postfix });
+  function create12HrArray(postfix, startHour) {
+    var halfDayList = [];
+    for (var j = 1; j < 12; j++) {
+      halfDayList.push({ hour: (j + startHour - 1), label: j + postfix });
     }
+
+    halfDayList.unshift({ hour: (startHour - 1), label: 12 + postfix });
+    return halfDayList;
   }
 /*
   var favorites = undefined;
