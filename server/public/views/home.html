@@ -64,7 +64,7 @@
     </form>
     <div class="row">
       <p><span ng-show="testPhoton">Testing link to Photon...{{testPhotonResult}}</span></p>
-      <p><span ng-show="findLocation">Querying Google API for location...{{findLocationResult}}</span></p>
+      <p><span ng-show="findLocation">Querying Google API for location...{{findLocationResult}} {{location.lat}}, {{location.long}}</span></p>
       <p><span ng-show="storeUser">Storing device &amp; user settings...{{storeUserResult}}</span></p>
       <p><span ng-show="linkSent">Check your email for a link to the main page!</span></p>
     </div>

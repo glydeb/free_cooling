@@ -2,16 +2,6 @@ myApp.factory('DataFactory', ['$http', function ($http) {
   console.log('dataFactory running');
 
   // PRIVATE
-  function makeid(len) {
-    var text = [];
-    var possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
-
-    for (var i = 0; i < len; i++) {
-      text.push(possible.charAt(Math.floor(Math.random() * possible.length)));
-    }
-
-    return text.join();
-  }
 
   // create hour array and fill it
   var hourList = create12HrArray(' AM', 1).concat(create12HrArray(' PM', 13));

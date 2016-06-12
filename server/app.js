@@ -2,10 +2,13 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var bodyParser = require('body-parser');
+var request = require('request');
 
 // modules
 // var pets = require('./routes/pets');
 var index = require('./routes/index');
+var setup = require('./routes/setup');
+var location = require('./routes/location');
 
 // serve static files
 app.use(express.static(path.join(__dirname, './public')));
@@ -15,7 +18,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // express routes
-// app.use('/pets', pets);
+app.use('/store', setup);
+app.use('/location', location);
 app.use('/', index);
 
 // start server
@@ -32,8 +36,5 @@ app.listen(app.get('port'), function () {
 
   // Sample textbelt text message post:
    curl -X POST http://textbelt.com/text -d number=5551234567 -d "message=I sent this message for free with textbelt.com"
-
-  // Google API key - 'Free Cooling Key'
-  latLongKey = 'AIzaSyC2m5hJtKCJ4ENzVrqWrmWFj6yVTl3ZFnQ'
 
 */
