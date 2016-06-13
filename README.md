@@ -31,3 +31,8 @@ The device will store the latest outdoor temperature and humidity data from the 
 
 ### Manage Device
 On page load, the page will display the device settings.  The user can edit settings for alerts, location, device/user settings, enable/cancel alerts and remove the device from service.
+
+###Heroku scheduler:
+To manage scheduled jobs run:
+heroku addons:open scheduler
+Use `heroku addons:docs scheduler` to view documentation.

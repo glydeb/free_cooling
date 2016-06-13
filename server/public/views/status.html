@@ -34,16 +34,11 @@
       </p>
     </div>
   </div>
+  <h2>Recommendation: {{recommendation}} ({{reason}})</h2>
   <table>
     <tr><th>Date</th><th>Time</th><th>Indoor Temp</th><th>Indoor RH</th><th>Outdoor Temp</th><th>Outdoor RH</th><th>Rain %</th><th>Recommendation</th></tr>
-    <tr ng-repeat="records in history | orderBy: 'date_time'">
-      <h2>{{animal.name}}</h2>
-      <p>
-        <img ng-if="animal.photoURL" ng-src="{{animal.photoURL}}"
-          alt="Image of {{animal.name}}"/>
-        <span>Petfinder ID: {{animal.id}}</span>
-        <span>Short Description: {{animal.description}}</span>
-      </p>
+    <tr ng-repeat="record in history | orderBy: 'date_time'">
+      <td>{{record.date}}</td><td>{{record.time}}</td><td>{{record.spaceTemp}}</td><td>{{record.spaceRH}}</td><td>{{record.outsideTemp}}</td><td>{{record.outsideRH}}</td><td>{{record.precipChance}}</td><td>{{record.recommendation}}</td>
       <button ng-click="deleteFav(animal._id)">Delete from favorites</button>
     </tr>
   </table>

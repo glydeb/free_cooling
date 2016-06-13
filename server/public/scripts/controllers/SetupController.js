@@ -1,4 +1,4 @@
-myApp.controller('SetupController', ['$scope', '$http', 'DataFactory', function ($scope, $http, DataFactory) {
+myApp.controller('SetupController', ['$scope', '$http', '$location', 'DataFactory', function ($scope, $http, $location, DataFactory) {
   console.log('SetupController online');
   $scope.dataFactory = DataFactory;
   $scope.fullDay = $scope.dataFactory.factoryHourArray();

@@ -3,6 +3,7 @@ var router = express.Router();
 var request = require('request');
 var pg = require('pg');
 var connectionString = 'postgres://localhost:5432/free_cooling';
+// heroku database: postgresql-tetrahedral-15645
 
 // Google API key - 'Free Cooling Key'
 var latLongKey = 'AIzaSyC2m5hJtKCJ4ENzVrqWrmWFj6yVTl3ZFnQ';

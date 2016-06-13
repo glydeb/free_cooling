@@ -1,4 +1,4 @@
-myApp.controller('StatusController', ['$scope', '$http', 'DataFactory', function ($scope, $http, DataFactory) {
+myApp.controller('StatusController', ['$scope', '$http', '$location', 'DataFactory', function ($scope, $http, $location, DataFactory) {
   console.log('StatusController online');
   $scope.dataFactory = DataFactory;
 /*
