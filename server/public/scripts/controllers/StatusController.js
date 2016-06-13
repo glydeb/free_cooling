@@ -1,50 +1,40 @@
 myApp.controller('StatusController', ['$scope', '$http', '$location', 'DataFactory', function ($scope, $http, $location, DataFactory) {
   console.log('StatusController online');
   $scope.dataFactory = DataFactory;
-/*
-  if ($scope.dataFactory.factoryGetFaves() === undefined) {
-    $scope.dataFactory.factoryRefreshFaveData().then(function () {
-      $scope.faves = $scope.dataFactory.factoryGetFaves();
-    });
-  } else {
-    $scope.faves = $scope.dataFactory.factoryGetFaves();
+
+  // Authenticate user
+  // Poll device
+  // Get forecast
+  // determine absolute humidity
+  // make recommendation
+  // store current data, setup task, display history
+
+  function queryPhoton(photonVariable) {
+    // Assemble request to paritcle API
+    var baseURL = 'https://api.particle.io/v1/devices/';
+
+    // Formulate request to device
+    var query = $scope.photonID;
+    query += '/' + photonVariable + '?access_token=';
+    query += $scope.accessToken;
+
+    var request = baseURL + encodeURI(query);
+
+    // Request temperature from device
+    $http.get(request).then(
+      function (response) {
+        if (response.status == 200) {
+          // Give feedback and proceed to verify location
+          $scope.photonResult = 'Success!';
+          $scope[response.data.coreInfo.name] = response.data.coreInfo.result;
+        } else {
+          $scope.photonResult = 'Failure - returned ' +
+            response.statusText;
+          return false;
+        }
+      }
+    );
+
   }
 
-  $scope.saveFave = function ()  {
-
-    // check for duplicate id
-    var found = false;
-    var existing = $scope.faves;
-    existing.forEach(function (fave) {
-      console.log(fave.id);
-      if (fave.id == $scope.animal.id.$t) {
-        found = true;
-      }
-    });
-
-    if (found) {
-      alert('That animal is already one of your favorites!');
-    } else {
-      var data = {
-        id: $scope.animal.id.$t,
-        name: $scope.animal.name.$t,
-        animalType: $scope.animal.animal.$t
-      };
-
-      // check for photo
-      if ($scope.photos[1] !== undefined) {
-        data.photoURL = $scope.photos[1].$t;
-      }
-
-      if ($scope.animal.description.$t !== undefined) {
-        data.description = $scope.animal.description.$t.substr(0, 100);
-      }
-
-      $scope.dataFactory.factorySaveFave(data).then(function () {
-        console.log('done saving');
-        $scope.faves = $scope.dataFactory.factoryGetFaves();
-      });
-    }
-  };
-*/
 }]);

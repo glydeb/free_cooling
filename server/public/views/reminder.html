@@ -1,13 +1,19 @@
 <div class="container">
-  <p>Favorites saved: {{faves.length}}</p>
-  <div ng-repeat="animal in faves | orderBy: 'animalType'" class="fave">
-    <h2>{{animal.name}}</h2>
-    <p>
-      <img ng-if="animal.photoURL" ng-src="{{animal.photoURL}}"
-        alt="Image of {{animal.name}}"/>
-      <span>Petfinder ID: {{animal.id}}</span>
-      <span>Short Description: {{animal.description}}</span>
-    </p>
-    <button ng-click="deleteFav(animal._id)">Delete from favorites</button>
-  </div>
+  <form>
+    <fieldset>
+      <legend>Lost Link Reminder (All fields required):</legend>
+      <p>
+        <label for="email">Email:</label>
+        <input type="text" name="email" maxlength="254" ng-model="reminder.email" />
+      </p>
+      <p>
+        <label for="photonID">photon ID:</label>
+        <input type="text" name="photonID" maxlength="24" ng-model="reminder.photonID" />
+      </p>
+      <p>
+        <button ng-click="sendReminder()">Resend Link</button>
+      </p>
+    </fieldset>
+  </form>
+  <p ng-show="sent">Reminder Sent!</p>
 </div>

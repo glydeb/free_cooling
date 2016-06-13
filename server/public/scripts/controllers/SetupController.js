@@ -143,6 +143,7 @@ myApp.controller('SetupController', ['$scope', '$http', '$location', 'DataFactor
         function (response) {
           if (response.status == 200) {
             // Give feedback and proceed to verify location
+            console.log(response);
             $scope.testPhotonResult = 'Success!';
             getLocation();
           } else {

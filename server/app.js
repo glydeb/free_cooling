@@ -10,6 +10,7 @@ var request = require('request');
 var index = require('./routes/index');
 var setup = require('./routes/setup');
 var location = require('./routes/location');
+var reminder = require('./routes/reminder');
 
 // serve static files
 app.use(express.static(path.join(__dirname, './public')));
@@ -21,6 +22,7 @@ app.use(bodyParser.json());
 // express routes
 app.use('/store', setup);
 app.use('/location', location);
+app.use('/reminder', reminder);
 app.use('/', index);
 
 // start server

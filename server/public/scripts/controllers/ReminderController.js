@@ -1,25 +1,18 @@
 myApp.controller('ReminderController', ['$scope', '$http', 'DataFactory', function ($scope, $http, DataFactory) {
   console.log('ReminderController online');
+  $scope.reminder = {};
 
-/*  $scope.faves = [];
-  $scope.dataFactory = DataFactory;
+  //when a valid email and deviceID is entered, resend the link
+  $scope.sendReminder = function () {
 
-  if ($scope.dataFactory.factoryGetFaves() === undefined) {
-    $scope.dataFactory.factoryRefreshFaveData().then(function () {
-      $scope.faves = $scope.dataFactory.factoryGetFaves();
+    $http.post('/reminder', $scope.reminder).then(function (response) {
+      if (response.status == 200) {
+        console.log('Hooray! Reminder sent!');
+      } else {
+        console.log('Boo!', response.data);
+      }
     });
-  } else {
-    $scope.faves = $scope.dataFactory.factoryGetFaves();
-  }
 
-  $scope.deleteFav = function (id) {
-    $http.delete('/pets/' + id)
-      .then(function (response) {
-        console.log('DELETE /pets ', id);
-        $scope.dataFactory.factoryRefreshFaveData().then(function () {
-          $scope.faves = $scope.dataFactory.factoryGetFaves();
-        });
-      });
   };
-*/
+
 }]);
