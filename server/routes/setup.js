@@ -3,7 +3,13 @@ var router = express.Router();
 var request = require('request');
 var pg = require('pg');
 var connectionString = 'postgres://localhost:5432/free_cooling';
+var sendgrid  = require('sendgrid')('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');
 var usedHash = [];
+var invitation   = {
+  from: 'lonehawk40@gmail.com',
+  subject: 'Welcome to Free Cooling!',
+  html: '<p>Thank you for signing up with Free Cooling. Click the following link to visit the main site.</p>'
+};
 
 //
 pg.connect(connectionString, function (err, client, done) {
@@ -13,7 +19,7 @@ pg.connect(connectionString, function (err, client, done) {
       usedHash = result.rows;
       console.log(usedHash);
 
-  });
+    });
 });
 
 router.post('/', function (req, res) {
@@ -82,6 +88,14 @@ function devicesInsert(client, done, locationID, setup, res) {
         res.sendStatus(500);
         return;
       }
+
+      invitation.to = setup.email;
+      invitation.html += '<a href="localhost:3000/status?device='
+      invitation.html += hash + '">Free Cooling</a>'
+      sendgrid.send(invitation, function(err, json) {
+        if (err) { console.error(err); }
+        console.log(json);
+      });
 
       res.sendStatus(201);
     });

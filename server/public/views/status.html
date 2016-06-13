@@ -1,13 +1,50 @@
 <div class="container">
-  <p>Favorites saved: {{faves.length}}</p>
-  <div ng-repeat="animal in faves | orderBy: 'animalType'" class="fave">
-    <h2>{{animal.name}}</h2>
-    <p>
-      <img ng-if="animal.photoURL" ng-src="{{animal.photoURL}}"
-        alt="Image of {{animal.name}}"/>
-      <span>Petfinder ID: {{animal.id}}</span>
-      <span>Short Description: {{animal.description}}</span>
-    </p>
-    <button ng-click="deleteFav(animal._id)">Delete from favorites</button>
+  <p>Status Report for {{nickname}} at {{address}}, {{city}}, {{state}} {{zip}}<br />(Lat: {{latitude}}, Long: {{longitude}})<a href="">Manage Settings...</a></p>
+  <div class="row">
+    <div class="md-col-3">
+      <p>
+        Indoor Temp: {{indoor.temp}}
+      </p>
+    </div>
+    <div class="md-col-3">
+      <p>
+        Outdoor Temp: {{outdoor.temp}}
+      </p>
+    </div>
+    <div class="md-col-3">
+      <p>
+        Conditions: {{outdoor.conditions}}
+      </p>
+    </div>
   </div>
+  <div class="row">
+    <div class="md-col-3">
+      <p>
+        Indoor RH: {{indoor.rh}}&#37;
+      </p>
+    </div>
+    <div class="md-col-3">
+      <p>
+        Outdoor RH: {{outdoor.rh}}&#37;
+      </p>
+    </div>
+    <div class="md-col-3">
+      <p>
+        Chance of rain: {{outdoor.forecast}}&#37;
+      </p>
+    </div>
+  </div>
+  <table>
+    <tr><th>Date</th><th>Time</th><th>Indoor Temp</th><th>Indoor RH</th><th>Outdoor Temp</th><th>Outdoor RH</th><th>Rain %</th><th>Recommendation</th></tr>
+    <tr ng-repeat="records in history | orderBy: 'date_time'">
+      <h2>{{animal.name}}</h2>
+      <p>
+        <img ng-if="animal.photoURL" ng-src="{{animal.photoURL}}"
+          alt="Image of {{animal.name}}"/>
+        <span>Petfinder ID: {{animal.id}}</span>
+        <span>Short Description: {{animal.description}}</span>
+      </p>
+      <button ng-click="deleteFav(animal._id)">Delete from favorites</button>
+    </tr>
+  </table>
 </div>

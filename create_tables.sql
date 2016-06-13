@@ -22,7 +22,7 @@ CREATE TABLE devices (
 	location_id REFERENCES locations,
 	access_token varchar(40),
 	nickname varchar(80),
-	phone_number REFERENCES phones
+	phone_number varchar(13)
 );
 
 CREATE TABLE indoor_conditions (

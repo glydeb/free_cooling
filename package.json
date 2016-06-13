@@ -19,9 +19,12 @@
   "homepage": "https://github.com/glydeb/free_cooling#readme",
   "dependencies": {
     "angular": "^1.5.6",
+    "bluebird": "^3.4.0",
     "body-parser": "^1.15.1",
     "express": "^4.13.4",
+    "forecast.io-bluebird": "0.0.1",
     "pg": "^4.5.6",
-    "request": "^2.72.0"
+    "request": "^2.72.0",
+    "sendgrid": "^2.0.0"
   }
 }
