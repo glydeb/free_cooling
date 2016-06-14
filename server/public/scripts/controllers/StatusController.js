@@ -60,14 +60,15 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', 'DataFacto
   function recommend() {
     console.log('Recommend run');
     var recommendation = 'open';
+
     // check 5 'reasons to close' - too cold inside, and colder outside,
     // too warm inside and warmer outside, too dry inside and drier
     // outside, too wet inside and wetter outside, and rain expected.
-    
+
   }
 
   function getHistory() {
-    $http.get('/data/' + $scope.)
+    $http.get('/data/' + $scope.device_id);
   }
 
   function queryPhoton(photonVariable) {
@@ -100,9 +101,9 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', 'DataFacto
 
   function absoluteHumidity(celsius, rh) {
     var temp = parseFloat(celsius);
-    var logTen = 8.07131 - (1730.63/ (temp + 233.426));
+    var logTen = 8.07131 - (1730.63 / (temp + 233.426));
     var satPressure = Math.pow(10, logTen);
-    absHumidity = (satPressure * (rh / 100) * 2.1674)/(celsius + 273.15);
+    absHumidity = (satPressure * (rh / 100) * 2.1674) / (celsius + 273.15);
     return absHumidity;
   }
 }]);
