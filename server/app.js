@@ -4,9 +4,7 @@ var path = require('path');
 var bodyParser = require('body-parser');
 var request = require('request');
 
-// heroku database: postgresql-tetrahedral-15645
 // modules
-// var pets = require('./routes/pets');
 var index = require('./routes/index');
 var setup = require('./routes/setup');
 var location = require('./routes/location');

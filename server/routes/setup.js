@@ -4,10 +4,10 @@ var request = require('request');
 var pg = require('pg');
 // heroku database: postgresql-tetrahedral-15645
 var connectionString = 'postgres://localhost:5432/free_cooling';
-var sendgrid  = require('sendgrid')(SENDGRID_KEY);
+var sendgrid  = require('sendgrid')(process.env.SENDGRID_KEY);
 var usedHash = [];
 var invitation   = {
-  from: FROM_EMAIL,
+  from: process.env.FROM_EMAIL,
   subject: 'Welcome to Free Cooling!',
   text: 'Thank you for signing up with Free Cooling. Click the following link to visit the main site:\n\n'
 };

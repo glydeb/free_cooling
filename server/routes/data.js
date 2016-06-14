@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var request = require('request');
 var pg = require('pg');
-// heroku database: postgresql-tetrahedral-15645
 var connectionString = 'postgres://localhost:5432/free_cooling';
 
 router.get('/:hash', function (req, res) {

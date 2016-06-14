@@ -4,9 +4,9 @@ var request = require('request');
 var pg = require('pg');
 // heroku database: postgresql-tetrahedral-15645
 var connectionString = 'postgres://localhost:5432/free_cooling';
-var sendgrid  = require('sendgrid')(SENDGRID_KEY);
+var sendgrid  = require('sendgrid')(process.env.SENDGRID_KEY);
 var reminderEmail = {
-  from: FROM_EMAIL,
+  from: process.env.FROM_EMAIL,
   subject: 'Free Cooling reminder link',
   text: 'Welcome back to Free Cooling! Click the following link to return to the main site.\n\n'
 };
