@@ -7,8 +7,8 @@ var connectionString = 'postgres://localhost:5432/free_cooling';
 var sendgrid  = require('sendgrid')('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');
 var reminderEmail = {
   from: 'lonehawk40@gmail.com',
-  subject: 'Reminder link',
-  html: '<p>Welcome back to Free Cooling! Click the following link to return to the main site.</p>'
+  subject: 'Free Cooling reminder link',
+  text: 'Welcome back to Free Cooling! Click the following link to return to the main site.\n\n'
 };
 
 router.post('/', function (req, res) {
@@ -30,8 +30,8 @@ router.post('/', function (req, res) {
 
         console.log(result);
         reminderEmail.to = reminder.email;
-        reminderEmail.html += '<a href="freecooling.herokuapp.com/status?device=';
-        reminderEmail.html += result.rows[0] + '">Free Cooling</a>';
+        reminderEmail.text += 'https://freecooling.herokuapp.com/status?device=';
+        reminderEmail.text += result.rows[0].hash;
         sendgrid.send(reminderEmail, function (err, json) {
           if (err) { console.error(err); }
 

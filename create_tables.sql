@@ -25,14 +25,14 @@ CREATE TABLE devices (
 	phone_number varchar(13)
 );
 
-CREATE TABLE indoor_conditions (
+CREATE TABLE conditions (
   date_time date,
-  rh numeric,
-  temp numeric,
+  indoor_temp numeric,
+  indoor_rh numeric,
+  outdoor_temp numeric,
+  outdoor_rh numeric,
+  precip numeric,
+  recommend varchar(6),
   device_id varchar(24) REFERENCES devices
   PRIMARY KEY (date_time, device_id)
 );
-
-CREATE TABLE forecasts (
-
-)

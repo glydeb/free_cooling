@@ -4,23 +4,23 @@ var request = require('request');
 var pg = require('pg');
 // heroku database: postgresql-tetrahedral-15645
 var connectionString = 'postgres://localhost:5432/free_cooling';
-var sendgrid  = require('sendgrid')('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');
-var reminder   = {
-  from: 'lonehawk40@gmail.com',
-  subject: 'Reminder link',
-  html: '<p>Welcome back to Free Cooling! Click the following link to return to the main site.</p>'
-};
 
-router.post('/', function (req, res) {
-  var reminder = req.body;
+router.get('/:hash', function (req, res) {
+  var hash = req.params.hash;
 
   pg.connect(process.env.DATABASE_URL || connectionString, function (err, client, done) {
     if (err) {
       res.sendStatus(500);
     }
 
-    client.query('SELECT hash FROM devices WHERE email = $1 AND id = $2',
-     [reminder.email, reminder.photonID],
+    client.query('SELECT date_time, indoor_temp, indoor_rh, outdoor_temp,' +
+      ' outdoor_rh, precip, recommend, devices.id, access_token,' +
+      ' latitude, longitude FROM conditions' +
+      ' JOIN devices on devices.id = conditions.device_id' +
+      ' JOIN locations on devices.location_id = locations.id' +
+      ' WHERE devices.hash = $1' +
+      ' ORDER BY date_time DESC',
+      [hash],
       function (err, result) {
         done();
         if (err) {
@@ -29,16 +29,7 @@ router.post('/', function (req, res) {
         }
 
         console.log(result);
-        invitation.to = reminder.email;
-        invitation.html += '<a href="https://freecooling.herokuapp.com/status?device=';
-        invitation.html += result.rows[0] + '">Free Cooling</a>';
-        sendgrid.send(invitation, function (err, json) {
-          if (err) { console.error(err); }
-
-          console.log(json);
-        });
-
-        res.sendStatus(200);
+        res.send(result.rows);
       }
     );
   });
