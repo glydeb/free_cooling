@@ -16,7 +16,8 @@ pg.connect(process.env.DATABASE_URL || connectionString, function (err, client, 
   client.query('SELECT hash from devices',
     function (err, result) {
       done();
-      usedHash = result.rows;
+      if (result.rows !== undefined) { usedHash = result.rows; }
+
       console.log(usedHash);
 
     });
