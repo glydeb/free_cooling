@@ -95,7 +95,7 @@ function devicesInsert(client, done, locationID, setup, res) {
       }
 
       invitation.to = setup.email;
-      invitation.text += 'https://freecooling.herokuapp.com/status?device=';
+      invitation.text += 'https://freecooling.herokuapp.com/#/status?device=';
       invitation.text += hash;
       sendgrid.send(invitation, function(err, json) {
         if (err) { console.error(err); }

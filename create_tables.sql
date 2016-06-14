@@ -19,10 +19,12 @@ CREATE TABLE phones (
 
 CREATE TABLE devices (
 	id varchar(24) PRIMARY KEY,
-	location_id REFERENCES locations,
+  hash varchar(24),
+	location_id integer REFERENCES locations,
 	access_token varchar(40),
 	nickname varchar(80),
-	phone_number varchar(13)
+	phone_number varchar(13),
+  email varchar(254)
 );
 
 CREATE TABLE conditions (

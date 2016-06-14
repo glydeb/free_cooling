@@ -33,9 +33,8 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', 'DataFacto
   }
 
   // Poll device
-  queryPhoton(farenheit);
-  queryPhoton(celsius);
-  var indoorPromise = queryPhoton(rh);
+  queryPhoton('celsius');
+  var indoorPromise = queryPhoton('rh');
 
   // Get forecast
   var outdoorPromise = getForecast($location.search());

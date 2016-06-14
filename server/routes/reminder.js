@@ -30,7 +30,7 @@ router.post('/', function (req, res) {
 
         console.log(result);
         reminderEmail.to = reminder.email;
-        reminderEmail.text += 'https://freecooling.herokuapp.com/status?device=';
+        reminderEmail.text += 'https://freecooling.herokuapp.com/#/status?device=';
         reminderEmail.text += result.rows[0].hash;
         sendgrid.send(reminderEmail, function (err, json) {
           if (err) { console.error(err); }
