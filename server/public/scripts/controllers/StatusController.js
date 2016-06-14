@@ -4,6 +4,12 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', 'DataFacto
   $scope.indoor = {};
   $scope.outdoor = {};
   console.log($location.search());
+  $scope.setpoint = {
+    highLimit: (75.5 * 9 / 5) - 32,
+    lowLimit: (70.0 * 9 / 5) - 32,
+  };
+  $scope.setpoint.wetLimit = absoluteHumidity($scope.setpoint.highLimit, 60);
+  $scope.setpoint.dryLimit = absoluteHumidity($scope.setpoint.lowLimit, 35);
 
   // Authenticate user
   if ($location.search().device.length === 24) {
@@ -25,14 +31,44 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', 'DataFacto
     // invalid login, redirect to reminder page
     $location.path('/reminder');
   }
+
   // Poll device
-  $scope.indoor.temp = queryPhoton(farenheit);
-  $scope.indoor.celsius = queryPhoton(celsius);
-  $scope.indoor.rh = queryPhoton(rh);
+  queryPhoton(farenheit);
+  queryPhoton(celsius);
+  var indoorPromise = queryPhoton(rh);
+
   // Get forecast
+  var outdoorPromise = getForecast($location.search());
+
   // determine absolute humidity
+  indoorPromise.then(addAbsoluteHumidity($scope.indoor));
+  outdoorPromise.then(addAbsoluteHumidity($scope.outdoor));
+
   // make recommendation
-  // store current data, setup task, display history
+  recommend();
+
+  // store current data
+  $http.post('/data', currentConditions).then(function (response) {
+    if (response.status == 201) {
+      console.log('Hooray! Fave Saved!');
+      getHistory();
+    } else {
+      console.log('Boo!', response.data);
+    }
+  });
+
+  function recommend() {
+    console.log('Recommend run');
+    var recommendation = 'open';
+    // check 5 'reasons to close' - too cold inside, and colder outside,
+    // too warm inside and warmer outside, too dry inside and drier
+    // outside, too wet inside and wetter outside, and rain expected.
+    
+  }
+
+  function getHistory() {
+    $http.get('/data/' + $scope.)
+  }
 
   function queryPhoton(photonVariable) {
     // Assemble request to paritcle API
@@ -46,12 +82,12 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', 'DataFacto
     var request = baseURL + encodeURI(query);
 
     // Request temperature from device
-    $http.get(request).then(
+    return $http.get(request).then(
       function (response) {
         if (response.status == 200) {
           // Give feedback and proceed to verify location
           $scope.photonResult = 'Success!';
-          $scope[response.data.coreInfo.name] = response.data.coreInfo.result;
+          $scope.indoor[response.data.coreInfo.name] = response.data.coreInfo.result;
         } else {
           $scope.photonResult = 'Failure - returned ' +
             response.statusText;
@@ -62,4 +98,11 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', 'DataFacto
 
   }
 
+  function absoluteHumidity(celsius, rh) {
+    var temp = parseFloat(celsius);
+    var logTen = 8.07131 - (1730.63/ (temp + 233.426));
+    var satPressure = Math.pow(10, logTen);
+    absHumidity = (satPressure * (rh / 100) * 2.1674)/(celsius + 273.15);
+    return absHumidity;
+  }
 }]);

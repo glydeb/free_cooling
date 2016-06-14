@@ -4,12 +4,12 @@ var request = require('request');
 var pg = require('pg');
 // heroku database: postgresql-tetrahedral-15645
 var connectionString = 'postgres://localhost:5432/free_cooling';
-var sendgrid  = require('sendgrid')('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');
+var sendgrid  = require('sendgrid')(SENDGRID_KEY);
 var usedHash = [];
 var invitation   = {
-  from: 'lonehawk40@gmail.com',
+  from: FROM_EMAIL,
   subject: 'Welcome to Free Cooling!',
-  html: '<p>Thank you for signing up with Free Cooling. Click the following link to visit the main site.</p>'
+  text: 'Thank you for signing up with Free Cooling. Click the following link to visit the main site:\n\n'
 };
 
 pg.connect(process.env.DATABASE_URL || connectionString, function (err, client, done) {
@@ -90,8 +90,8 @@ function devicesInsert(client, done, locationID, setup, res) {
       }
 
       invitation.to = setup.email;
-      invitation.html += '<a href="freecooling.herokuapp.com/status?device=';
-      invitation.html += hash + '">Free Cooling</a>';
+      invitation.text += 'https://freecooling.herokuapp.com/status?device=';
+      invitation.text += hash;
       sendgrid.send(invitation, function(err, json) {
         if (err) { console.error(err); }
         console.log(json);

@@ -6,11 +6,11 @@ var connectionString = 'postgres://localhost:5432/free_cooling';
 // heroku database: postgresql-tetrahedral-15645
 
 // Google API key - 'Free Cooling Key'
-var latLongKey = 'AIzaSyC2m5hJtKCJ4ENzVrqWrmWFj6yVTl3ZFnQ';
+var latLongKey = '';
 
 router.get('/:address', function (req, res) {
   var apiCall = 'https://maps.googleapis.com/maps/api/geocode/json?address=' +
-    req.params.address + '&key=' + latLongKey;
+    req.params.address + '&key=' + LATLONG_KEY;
   console.log(apiCall);
   request(apiCall, function(err, response, location) {
     if (err) {
