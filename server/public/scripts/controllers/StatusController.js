@@ -41,36 +41,12 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
             queryPhoton('celsius'),
             queryPhoton('humidity'),
             getForecast()
-          ]).then(function (result) {
+          ]).then(function (response) {
 
-            var proceed = true;
-            if (response[0].status == 200) {
-              // Give feedback and proceed to verify location
-              $scope.indoor.celsius = response[0].data.coreInfo.result;
-            } else {
-              console.log('Photon Celsius Failure - returned ' +
-                response.statusText);
-              proceed = false;
-            }
-
-            if (response[1].status == 200) {
-              // Give feedback and proceed to verify location
-              $scope.indoor.rh = response[0].data.coreInfo.result;
-            } else {
-              console.log('Photon RH Failure - returned ' +
-                response.statusText);
-              proceed = false;
-            }
-
-            if (response[2].status == 200) {
-              $scope.outdoor = response.data.currently;
-              console.log('Hooray! Forecast received', response);
-            } else {
-              console.log('Boo!', response.data);
-              proceed = false;
-            }
-
-            if (proceed) { recommend(); }
+            $scope.indoor.celsius = response[0].data.coreInfo.result;
+            $scope.indoor.rh = response[1].data.coreInfo.result;
+            $scope.outdoor = response.data.currently;
+            recommend();
           });
 
         } else {
