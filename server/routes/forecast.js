@@ -8,6 +8,8 @@ var forecast = new Forecast({
 });
 
 router.post('/', function (req, res) {
+  var latitude = req.body.latitude;
+  var longitude = req.body.longitude;
   forecast.fetch(latitude, longitude).then(function (result) {
     console.log(result);
     res.send(result);

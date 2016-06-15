@@ -7,8 +7,8 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
 
   // define space condition constraints
   $scope.setpoint = {
-    highLimit: (75.5 * 9 / 5) - 32,
-    lowLimit: (70.0 * 9 / 5) - 32,
+    highLimit: (75.5 * 1.8) - 32,
+    lowLimit: (70.0 * 1.8) - 32,
   };
   $scope.setpoint.wetLimit = absoluteHumidity($scope.setpoint.highLimit, 60);
   $scope.setpoint.dryLimit = absoluteHumidity($scope.setpoint.lowLimit, 35);

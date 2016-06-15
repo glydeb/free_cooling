@@ -44,7 +44,9 @@ router.post('/', function (req, res) {
     client.query('INSERT INTO conditions (date_time, indoor_temp, indoor_rh,' +
       ' outdoor_temp, outdoor_rh, precip, recommend, device_id)' +
       ' VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
-      [hash],
+      [conditions.date, conditions.indoorTemp, conditions.indoorRH,
+      conditions.outdoorTemp, conditions.outdoorRH, conditions.precip,
+      conditions.recommendation, conditions.deviceID],
       function (err, result) {
         done();
         if (err) {
