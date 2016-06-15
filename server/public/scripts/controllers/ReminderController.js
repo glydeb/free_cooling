@@ -8,6 +8,7 @@ myApp.controller('ReminderController', ['$scope', '$http', 'DataFactory', functi
     $http.post('/reminder', $scope.reminder).then(function (response) {
       if (response.status == 200) {
         console.log('Hooray! Reminder sent!');
+        $scope.sent = true;
       } else {
         console.log('Boo!', response.data);
       }

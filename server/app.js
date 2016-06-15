@@ -10,6 +10,7 @@ var setup = require('./routes/setup');
 var location = require('./routes/location');
 var reminder = require('./routes/reminder');
 var data = require('./routes/data');
+var forecast = require('./routes/forecast');
 
 // serve static files
 app.use(express.static(path.join(__dirname, './public')));
@@ -23,6 +24,7 @@ app.use('/store', setup);
 app.use('/data', data);
 app.use('/location', location);
 app.use('/reminder', reminder);
+app.use('/forecast', forecast);
 app.use('/', index);
 
 // start server

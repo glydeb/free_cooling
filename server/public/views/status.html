@@ -39,7 +39,6 @@
     <tr><th>Date</th><th>Time</th><th>Indoor Temp</th><th>Indoor RH</th><th>Outdoor Temp</th><th>Outdoor RH</th><th>Rain %</th><th>Recommendation</th></tr>
     <tr ng-repeat="record in history | orderBy: 'date_time'">
       <td>{{record.date}}</td><td>{{record.time}}</td><td>{{record.spaceTemp}}</td><td>{{record.spaceRH}}</td><td>{{record.outsideTemp}}</td><td>{{record.outsideRH}}</td><td>{{record.precipChance}}</td><td>{{record.recommendation}}</td>
-      <button ng-click="deleteFav(animal._id)">Delete from favorites</button>
     </tr>
   </table>
 </div>
