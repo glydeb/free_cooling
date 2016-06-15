@@ -39,7 +39,7 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
           // then process recommendation & save data
           $q.all([
             queryPhoton('celsius'),
-            queryPhoton('rh'),
+            queryPhoton('humidity'),
             getForecast()
           ]).then(function (result) {
 
