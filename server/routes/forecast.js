@@ -7,7 +7,7 @@ var forecast = new Forecast({
   timeout: 2500
 });
 
-router.get('/', function (req, res) {
+router.post('/', function (req, res) {
   var latitude = req.body.latitude;
   var longitude = req.body.longitude;
   forecast.fetch(latitude, longitude).then(function (result) {

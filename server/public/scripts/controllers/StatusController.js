@@ -64,7 +64,7 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
   }
 
   function getForecast() {
-    return $http.get('/forecast', location);
+    return $http.post('/forecast', location);
   }
 
   function recommend() {
