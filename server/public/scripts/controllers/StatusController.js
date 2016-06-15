@@ -45,7 +45,8 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
 
             $scope.indoor.celsius = response[0].data.coreInfo.result;
             $scope.indoor.rh = response[1].data.coreInfo.result;
-            $scope.outdoor = response.data.currently;
+            $scope.outdoor = response[2].data.currently;
+            console.log(response[2].data);
             recommend();
           });
 
