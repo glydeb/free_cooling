@@ -2,36 +2,36 @@
   <p>Status Report for {{information.nickname}} at {{information.street_address}}, {{information.city}}, {{information.state}} {{information.zip}}<br />(Lat: {{information.latitude}}, Long: {{information.longitude}}) <a href="#/setup">Manage Settings...</a></p>
   <div class="row">
     <div class="md-col-3">
-      <p>
+      <span>
         Indoor Temp: {{indoor.farenheit}}
-      </p>
+      </span>
     </div>
     <div class="md-col-3">
-      <p>
-        Outdoor Temp: {{outdoor.temp}}
-      </p>
+      <span>
+        Outdoor Temp: {{outdoor.temperature}}
+      </span>
     </div>
     <div class="md-col-3">
-      <p>
-        Conditions: {{outdoor.conditions}}
-      </p>
+      <span>
+        Conditions: {{outdoor.summary}}
+      </span>
     </div>
   </div>
   <div class="row">
     <div class="md-col-3">
-      <p>
+      <span>
         Indoor RH: {{indoor.rh}}&#37;
-      </p>
+      </span>
     </div>
     <div class="md-col-3">
-      <p>
-        Outdoor RH: {{outdoor.rh}}&#37;
-      </p>
+      <span>
+        Outdoor RH: {{outdoor.humidity * 100}}&#37;
+      </span>
     </div>
     <div class="md-col-3">
-      <p>
-        Chance of rain: {{outdoor.forecast}}&#37;
-      </p>
+      <span>
+        Chance of rain: {{outdoor.precipProbability}}&#37;
+      </span>
     </div>
   </div>
   <h2>Recommendation: {{recommendation}} ({{reason}})</h2>
