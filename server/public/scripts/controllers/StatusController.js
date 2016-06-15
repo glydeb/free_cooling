@@ -43,9 +43,10 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
             getForecast()
           ]).then(function (response) {
 
-            $scope.indoor.celsius = response[0].data.coreInfo.result;
-            $scope.indoor.rh = response[1].data.coreInfo.result;
+            $scope.indoor.celsius = response[0].data.result;
+            $scope.indoor.rh = response[1].data.result;
             $scope.outdoor = response[2].data.currently;
+            console.log(response[0].data.result);
             console.log(response[2].data);
             recommend();
           });
@@ -70,7 +71,7 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
     console.log('Recommend run');
 
     // convert photon output for display
-    $scope.indoor.farenheit = ($scope.indoor.celsius * 1.8) + 32;
+    $scope.indoor.farenheit = (parseFloat($scope.indoor.celsius) * 1.8) + 32;
 
     //fill currentConditions object
     currentConditions.date = new Date();
