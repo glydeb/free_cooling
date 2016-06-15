@@ -7,8 +7,8 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
 
   // define space condition constraints
   $scope.setpoint = {
-    highLimit: (75.5 * 5 / 9) - 32,
-    lowLimit: (70.0 * 5 / 9) - 32,
+    highLimit: ((75.5 - 32) * 5 / 9),
+    lowLimit: ((70.0 - 32) * 5 / 9)
   };
   $scope.setpoint.wetLimit = absoluteHumidity($scope.setpoint.highLimit, 60);
   $scope.setpoint.dryLimit = absoluteHumidity($scope.setpoint.lowLimit, 35);
@@ -34,6 +34,15 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
           $scope.information = response.data[0];
           location.latitude = response.data[0].latitude;
           location.longitude = response.data[0].longitude;
+
+          // Gather all data for page - indoor & outdoor conditions & forecast
+          // then process recommendation & save data
+          $q.all([
+            queryPhoton('celsius'),
+            queryPhoton('rh'),
+            getForecast()
+          ]).then(recommend());
+
         } else {
           // more error handling here.
           // but if the device id isn't found, it's a bad link - redirect
@@ -45,14 +54,6 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
     // invalid login, redirect to reminder page
     $location.path('/reminder');
   }
-
-  // Gather all data for page - indoor & outdoor conditions & forecast
-  // then process recommendation & save data
-  promise.then($q.all([
-    queryPhoton('celsius'),
-    queryPhoton('rh'),
-    getForecast()
-  ]).then(recommend()));
 
   function getForecast() {
     return $http.post('/forecast', location).then(function (response) {
@@ -128,10 +129,10 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
 
   function absoluteHumidity(celsius, rh) {
     var temp = parseFloat(celsius);
-    var logTen = 8.07131 - (1730.63 / (temp + 233.426));
-    var satPressure = Math.pow(10, logTen);
-    absHumidity = (satPressure * (rh / 100) * 2.1674) / (celsius + 273.15);
-    var echo = celsius + 'deg. C, ' + rh + '% rh, ' + absHumidity + 'mmHg';
+    var logTen = (temp * 7.5) / (temp + 237.3);
+    var satPressure = Math.pow(10, logTen) * 6.11;
+    absHumidity = (satPressure * rh * 2.1674) / (celsius + 273.15);
+    var echo = celsius + 'deg. C, ' + rh + '% rh, ' + satPressure + 'mBar';
     console.log(echo);
     return absHumidity;
   }
