@@ -34,7 +34,7 @@
       </span>
     </div>
   </div>
-  <h2>Recommendation: {{recommendation}} ({{reason}})</h2>
+  <h2>Recommendation: Windows {{recommendation}} ({{reason}})</h2>
   <table>
     <tr><th>Date</th><th>Time</th><th>Indoor Temp</th><th>Indoor RH</th><th>Outdoor Temp</th><th>Outdoor RH</th><th>Rain %</th><th>Recommendation</th></tr>
     <tr ng-repeat="record in history | orderBy: 'date_time'">
