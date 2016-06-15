@@ -30,7 +30,7 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
           // if a good response, populate history table & model
           $scope.history = response.data;
           accessToken = response.data[0].access_token;
-          photonID = response.data[0].deviceID;
+          photonID = response.data[0].deviceid;
           $scope.information = response.data[0];
           location.latitude = response.data[0].latitude;
           location.longitude = response.data[0].longitude;
@@ -41,7 +41,37 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
             queryPhoton('celsius'),
             queryPhoton('rh'),
             getForecast()
-          ]).then(recommend());
+          ]).then(function (result) {
+
+            var proceed = true;
+            if (response[0].status == 200) {
+              // Give feedback and proceed to verify location
+              $scope.indoor.celsius = response[0].data.coreInfo.result;
+            } else {
+              console.log('Photon Celsius Failure - returned ' +
+                response.statusText);
+              proceed = false;
+            }
+
+            if (response[1].status == 200) {
+              // Give feedback and proceed to verify location
+              $scope.indoor.rh = response[0].data.coreInfo.result;
+            } else {
+              console.log('Photon RH Failure - returned ' +
+                response.statusText);
+              proceed = false;
+            }
+
+            if (response[2].status == 200) {
+              $scope.outdoor = response.data.currently;
+              console.log('Hooray! Forecast received', response);
+            } else {
+              console.log('Boo!', response.data);
+              proceed = false;
+            }
+
+            if (proceed) { recommend(); }
+          });
 
         } else {
           // more error handling here.
@@ -56,15 +86,7 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
   }
 
   function getForecast() {
-    return $http.post('/forecast', location).then(function (response) {
-      if (response.status == 200) {
-        $scope.outdoor = response;
-        console.log('Hooray! Forecast received', response);
-      } else {
-        console.log('Boo!', response.data);
-      }
-
-    });
+    return $http.post('/forecast', location);
   }
 
   function recommend() {
@@ -112,18 +134,7 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
     var request = baseURL + encodeURI(query);
 
     // Request temperature from device
-    return $http.get(request).then(
-      function (response) {
-        if (response.status == 200) {
-          // Give feedback and proceed to verify location
-          $scope.photonResult = 'Success!';
-          $scope.indoor[response.data.coreInfo.name] = response.data.coreInfo.result;
-        } else {
-          $scope.photonResult = 'Failure - returned ' +
-            response.statusText;
-        }
-      }
-    );
+    return $http.get(request);
 
   }
 
