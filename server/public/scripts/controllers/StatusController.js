@@ -34,8 +34,6 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
           $scope.information = response.data[0];
           location.latitude = response.data[0].latitude;
           location.longitude = response.data[0].longitude;
-          $scope.information.latitude = $scope.information.latitude.toFixed(3);
-          $scope.information.longitude = $scope.information.longitude.toFixed(3);
 
           // Gather all data for page - indoor & outdoor conditions & forecast
           // then process recommendation & save data
