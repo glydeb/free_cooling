@@ -6,6 +6,7 @@ var request = require('request');
 
 // modules
 var index = require('./routes/index');
+var alerts = require('./routes/alerts');
 var setup = require('./routes/setup');
 var location = require('./routes/location');
 var reminder = require('./routes/reminder');
@@ -23,6 +24,7 @@ app.use(bodyParser.json());
 app.use('/store', setup);
 app.use('/data', data);
 app.use('/location', location);
+app.use('/alerts', alerts);
 app.use('/reminder', reminder);
 app.use('/forecast', forecast);
 app.use('/', index);

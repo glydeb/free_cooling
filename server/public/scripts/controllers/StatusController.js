@@ -64,7 +64,7 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
   }
 
   function getForecast() {
-    return $http.post('/forecast', location);
+    return $http.get('/forecast', location);
   }
 
   function recommend() {
@@ -77,17 +77,52 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
     currentConditions.date = new Date();
     currentConditions.indoorTemp = $scope.indoor.farenheit;
     currentConditions.indoorRH = $scope.indoor.rh;
-    currentConditions.outdoorTemp = $scope.outdoor.temp;
-    currentConditions.outdoorRH = $scope.outdoor.rh;
-    currentConditions.precip = $scope.outdoor.forecast;
+    currentConditions.outdoorTemp = $scope.outdoor.temperature;
+    currentConditions.outdoorRH = $scope.outdoor.humidity * 100;
+    currentConditions.precip = $scope.outdoor.precipProbability;
     currentConditions.deviceID = photonID;
 
+    // Get outdoor conditions for comparison and indoor absolute humidity
+    $scope.outdoor.celsius = ($scope.outdoor.temperature - 32) * 5 / 9;
+    $scope.outdoor.absHumidity = absoluteHumidity($scope.outdoor.celsius,
+      $scope.outdoor.humidity * 100);
+    $scope.indoor.absHumidity = absoluteHumidity($scope.indoor.celsius,
+      $scope.indoor.rh);
+
+    // Default recommendation/reason
     $scope.recommendation = 'Open';
     $scope.reason = 'Free conditioning available';
 
     // check 5 'reasons to close' - too cold inside, and colder outside,
     // too warm inside and warmer outside, too dry inside and drier
     // outside, too wet inside and wetter outside, and rain expected.
+    if ($scope.outdoor.precipProbability > 0.25) {
+      $scope.recommendation = 'Closed';
+      $scope.reason = 'Rain predicted';
+    }
+
+    if ($scope.outdoor.absHumidity > $scope.setpoint.wetLimit) {
+      $scope.recommendation = 'Closed';
+      $scope.reason = 'Too humid outside';
+    }
+
+    if ($scope.outdoor.absHumidity < $scope.setpoint.dryLimit &&
+        $scope.indoor.absHumidity < $scope.setpoint.dryLimit) {
+      $scope.recommendation = 'Closed';
+      $scope.reason = 'Too dry outside';
+    }
+
+    if ($scope.outdoor.celsius > $scope.setpoint.highLimit) {
+      $scope.recommendation = 'Closed';
+      $scope.reason = 'Too hot outside';
+    }
+
+    if ($scope.outdoor.celsius < $scope.setpoint.lowLimit &&
+        $scope.indoor.celsius < $scope.setpoint.lowLimit) {
+      $scope.recommendation = 'Closed';
+      $scope.reason = 'Too cold outside';
+    }
+
     currentConditions.recommendation = $scope.recommendation;
 
     // Save all data
