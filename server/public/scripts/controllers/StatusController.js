@@ -7,15 +7,14 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
 
   // define space condition constraints
   $scope.setpoint = {
-    highLimit: (75.5 * 1.8) - 32,
-    lowLimit: (70.0 * 1.8) - 32,
+    highLimit: (75.5 * 5 / 9) - 32,
+    lowLimit: (70.0 * 5 / 9) - 32,
   };
   $scope.setpoint.wetLimit = absoluteHumidity($scope.setpoint.highLimit, 60);
   $scope.setpoint.dryLimit = absoluteHumidity($scope.setpoint.lowLimit, 35);
   var accessToken = '';
   var photonID = '';
   var currentConditions = {};
-  var promise = {};
   var location = {
     latitude: 0,
     longitude: 0
@@ -24,7 +23,7 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
   // Authenticate user
   if ($location.search().device.length === 24) {
     // attempt to retrieve device data
-    promise = $http.get('/data/' + $location.search().device).then(
+    var promise = $http.get('/data/' + $location.search().device).then(
       function (response) {
         console.log(response);
         if (response.status == 200) {
