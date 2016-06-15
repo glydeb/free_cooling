@@ -12,7 +12,7 @@ router.get('/:hash', function (req, res) {
       res.sendStatus(500);
     }
 
-    client.query('SELECT * FROM devices' +
+    client.query('SELECT *, devices.id as deviceID FROM devices' +
       ' LEFT OUTER JOIN conditions on devices.id = conditions.device_id' +
       ' JOIN locations on devices.location_id = locations.id' +
       ' WHERE devices.hash = $1' +
@@ -27,6 +27,33 @@ router.get('/:hash', function (req, res) {
 
         console.log(result);
         res.send(result.rows);
+      }
+    );
+  });
+});
+
+router.post('/', function (req, res) {
+
+  var conditions = req.body;
+
+  pg.connect(process.env.DATABASE_URL || connectionString, function (err, client, done) {
+    if (err) {
+      res.sendStatus(500);
+    }
+
+    client.query('INSERT INTO conditions (date_time, indoor_temp, indoor_rh,' +
+      ' outdoor_temp, outdoor_rh, precip, recommend, device_id)' +
+      ' VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+      [hash],
+      function (err, result) {
+        done();
+        if (err) {
+          res.sendStatus(500);
+          return;
+        }
+
+        console.log(result);
+        res.sendStatus(201);
       }
     );
   });

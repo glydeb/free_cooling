@@ -1,4 +1,4 @@
-myApp.controller('StatusController', ['$scope', '$http', '$location', 'DataFactory', function ($scope, $http, $location, DataFactory) {
+myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'DataFactory', function ($scope, $http, $location, $q, DataFactory) {
   console.log('StatusController online');
   $scope.dataFactory = DataFactory;
   $scope.indoor = {};
@@ -15,6 +15,7 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', 'DataFacto
   var accessToken = '';
   var photonID = '';
   var currentConditions = {};
+  var promise = {};
   var location = {
     latitude: 0,
     longitude: 0
@@ -23,14 +24,14 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', 'DataFacto
   // Authenticate user
   if ($location.search().device.length === 24) {
     // attempt to retrieve device data
-    $scope.wait = $http.get('/data/' + $location.search().device).then(
+    promise = $http.get('/data/' + $location.search().device).then(
       function (response) {
         console.log(response);
         if (response.status == 200) {
           // if a good response, populate history table & model
           $scope.history = response.data;
           accessToken = response.data[0].access_token;
-          photonID = response.data[0].id;
+          photonID = response.data[0].deviceID;
           $scope.information = response.data[0];
           location.latitude = response.data[0].latitude;
           location.longitude = response.data[0].longitude;
@@ -46,25 +47,19 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', 'DataFacto
     $location.path('/reminder');
   }
 
-  // Poll device, get forecast, make recommendation
-  $scope.wait.then(function () {
-    return queryPhoton('celsius').then(queryPhoton('rh').then(
-      getForecast().then(recommend())));
-  });
-
-  // store current data
-  $scope.wait.then($http.post('/data', currentConditions).then(function (response) {
-    if (response.status == 201) {
-      console.log('Hooray! Current conditions saved!');
-    } else {
-      console.log('Boo!', response.data);
-    }
-  }));
+  // Gather all data for page - indoor & outdoor conditions & forecast
+  // then process recommendation & save data
+  promise.then($q.all([
+    queryPhoton('celsius'),
+    queryPhoton('rh'),
+    getForecast()
+  ]).then(recommend()));
 
   function getForecast() {
     return $http.post('/forecast', location).then(function (response) {
       if (response.status == 200) {
-        console.log('Hooray! Forecast received');
+        $scope.outdoor = response;
+        console.log('Hooray! Forecast received', response);
       } else {
         console.log('Boo!', response.data);
       }
@@ -74,13 +69,35 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', 'DataFacto
 
   function recommend() {
     console.log('Recommend run');
-    $scope.recommendation = 'open';
+
+    // convert photon output for display
+    $scope.indoor.farenheit = ($scope.indoor.celsius * 1.8) + 32;
+
+    //fill currentConditions object
+    currentConditions.date = new Date();
+    currentConditions.indoorTemp = $scope.indoor.farenheit;
+    currentConditions.indoorRH = $scope.indoor.rh;
+    currentConditions.outdoorTemp = $scope.outdoor.temp;
+    currentConditions.outdoorRH = $scope.outdoor.rh;
+    currentConditions.precip = $scope.outdoor.forecast;
+    currentConditions.deviceID = photonID;
+
+    $scope.recommendation = 'Open';
     $scope.reason = 'Free conditioning available';
 
     // check 5 'reasons to close' - too cold inside, and colder outside,
     // too warm inside and warmer outside, too dry inside and drier
     // outside, too wet inside and wetter outside, and rain expected.
+    currentConditions.recommendation = $scope.recommendation;
 
+    // Save all data
+    $http.post('/data', currentConditions).then(function (response) {
+      if (response.status == 201) {
+        console.log('Hooray! Current conditions saved!');
+      } else {
+        console.log('Boo!', response.data);
+      }
+});
   }
 
   function queryPhoton(photonVariable) {
@@ -115,6 +132,8 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', 'DataFacto
     var logTen = 8.07131 - (1730.63 / (temp + 233.426));
     var satPressure = Math.pow(10, logTen);
     absHumidity = (satPressure * (rh / 100) * 2.1674) / (celsius + 273.15);
+    var echo = celsius + 'deg. C, ' + rh + '% rh, ' + absHumidity + 'mmHg';
+    console.log(echo);
     return absHumidity;
   }
 }]);
