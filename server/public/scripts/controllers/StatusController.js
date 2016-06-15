@@ -27,14 +27,13 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', 'DataFacto
       function (response) {
         console.log(response);
         if (response.status == 200) {
-          // if a good response, populate history table
-          $scope.history = response.rows;
-          accessToken = response.rows[0].access_token;
-          photonID = response.rows[0].id;
-          $scope.latitude = response.rows[0].latitude;
-          $scope.longitude = response.rows[0].longitude;
-          location.latitude = $scope.latitude;
-          location.longitude = $scope.longitude;
+          // if a good response, populate history table & model
+          $scope.history = response.data;
+          accessToken = response.data[0].access_token;
+          photonID = response.data[0].id;
+          $scope.information = response.data[0];
+          location.latitude = response.data[0].latitude;
+          location.longitude = response.data[0].longitude;
         } else {
           // more error handling here.
           // but if the device id isn't found, it's a bad link - redirect
@@ -49,12 +48,12 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', 'DataFacto
 
   // Poll device, get forecast, make recommendation
   $scope.wait.then(function () {
-    $scope.waitAgain = queryPhoton('celsius').then(queryPhoton('rh').then(
+    return queryPhoton('celsius').then(queryPhoton('rh').then(
       getForecast().then(recommend())));
   });
 
   // store current data
-  $scope.waitAgain.then($http.post('/data', currentConditions).then(function (response) {
+  $scope.wait.then($http.post('/data', currentConditions).then(function (response) {
     if (response.status == 201) {
       console.log('Hooray! Current conditions saved!');
     } else {
@@ -105,7 +104,6 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', 'DataFacto
         } else {
           $scope.photonResult = 'Failure - returned ' +
             response.statusText;
-          return false;
         }
       }
     );

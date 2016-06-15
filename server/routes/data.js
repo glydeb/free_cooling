@@ -12,9 +12,7 @@ router.get('/:hash', function (req, res) {
       res.sendStatus(500);
     }
 
-    client.query('SELECT date_time, indoor_temp, indoor_rh, outdoor_temp,' +
-      ' outdoor_rh, precip, recommend, devices.id, access_token,' +
-      ' latitude, longitude FROM devices' +
+    client.query('SELECT * FROM devices' +
       ' LEFT OUTER JOIN conditions on devices.id = conditions.device_id' +
       ' JOIN locations on devices.location_id = locations.id' +
       ' WHERE devices.hash = $1' +
