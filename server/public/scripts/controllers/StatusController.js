@@ -38,7 +38,7 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
           // separate date & time for table display
           $scope.history.forEach(function (row, i) {
             $scope.history[i].date = $scope.history[i].date_time.substr(0, 10);
-            $scope.history[i].time = $scope.history[i].date_time.substr(11);
+            $scope.history[i].time = $scope.history[i].date_time.substr(11, 10);
           });
 
           // Gather all data for page - indoor & outdoor conditions & forecast
