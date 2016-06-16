@@ -1,5 +1,5 @@
 <div class="container">
-  <p>Status Report for {{information.nickname}} at {{information.street_address}}, {{information.city}}, {{information.state}} {{information.zip}}<br />(Lat: {{information.latitude}}, Long: {{information.longitude}}) <a href="#/setup">Manage Settings...</a></p>
+  <p>Status Report for &#34;{{information.nickname}}&#34; at {{information.street_address}}, {{information.city}}, {{information.state}} {{information.zip}}<br />(Lat: {{information.latitude}}, Long: {{information.longitude}}) <a href="#/setup">Manage Settings...</a></p>
   <div class="row">
     <div class="md-col-3">
       <span>
@@ -37,7 +37,7 @@
   <h2>Recommendation: Windows {{recommendation}} ({{reason}})</h2>
   <table>
     <tr><th>Date</th><th>Time</th><th>Indoor Temp</th><th>Indoor RH</th><th>Outdoor Temp</th><th>Outdoor RH</th><th>Rain %</th><th>Recommendation</th></tr>
-    <tr ng-repeat="record in history | orderBy: 'date_time'">
+    <tr ng-repeat="record in history">
       <td>{{record.date}}</td><td>{{record.time}}</td><td>{{record.spaceTemp}}</td><td>{{record.spaceRH}}</td><td>{{record.outsideTemp}}</td><td>{{record.outsideRH}}</td><td>{{record.precipChance}}</td><td>{{record.recommendation}}</td>
     </tr>
   </table>

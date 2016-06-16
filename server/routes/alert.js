@@ -7,6 +7,9 @@ var forecast = new Forecast({
   key: process.env.FORECAST_KEY,
   timeout: 2500
 });
+var locationForecasts = [];
+var deviceConditions = [];
+var lastRecommendations = [];
 
 router.post('/', function (req, res) {
 
@@ -22,8 +25,8 @@ router.post('/', function (req, res) {
       ' WHERE allow_alerts = TRUE' +
       ' GROUP BY latitude, longitude',
       function (err, result) {
-        done();
         if (err) {
+          done();
           return;
         }
 
@@ -38,8 +41,72 @@ router.post('/', function (req, res) {
         }
       }
     );
+
+    client.query('SELECT id, access_token FROM devices' +
+      ' JOIN conditions ON devices.id = conditions.device_id' +
+      ' JOIN locations ON devices.location_id = locations.id' +
+      ' JOIN phones ON phones.phone_number = devices.phone_number' +
+      ' WHERE allow_alerts = TRUE' +
+      ' GROUP BY id, access_token',
+      function (err, result) {
+        if (err) {
+          done();
+          return;
+        }
+
+        if (result !== undefined) {
+          result.rows.forEach(function (row, i) {
+            this.push(queryPhoton('celsius'));
+            this.push(queryPhoton('rh'));
+          });
+        }
+      }
+    );
+    client.query('SELECT devices.id, MAX(date_time) as last_recommended,' +
+      ' recommend FROM devices' +
+      ' JOIN conditions ON devices.id = conditions.device_id' +
+      ' JOIN locations ON devices.location_id = locations.id' +
+      ' JOIN phones ON phones.phone_number = devices.phone_number' +
+      ' WHERE allow_alerts = TRUE' +
+      ' GROUP BY devices.id, recommend' +
+      ' ORDER BY last_recommended DESC',
+      function (err, result) {
+        if (err) {
+          done();
+          return;
+        }
+
+        if (result !== undefined) {
+          result.rows.forEach(function (row, i) {
+            this.push(queryPhoton('celsius'));
+            this.push(queryPhoton('rh'));
+          });
+        }
+      }
+    );
   });
 });
 
+function queryPhoton(photonVariable, photonID, accessToken) {
+  // Assemble request to paritcle API
+  var baseURL = 'https://api.particle.io/v1/devices/';
+
+  // Formulate request to device
+  var query = photonID;
+  query += '/' + photonVariable + '?access_token=';
+  query += accessToken;
+
+  var apiCall = baseURL + encodeURI(query);
+
+  // Request temperature from device
+  return request(apiCall, function (err, status, photonResponse) {
+    if (err) {
+      return -1;
+    } else {
+      return photonResponse;
+    }
+  });
+
+}
 
 module.exports = router;
