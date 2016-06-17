@@ -42,7 +42,7 @@ router.post('/', function (req, res) {
       }
     );
 
-    client.query('SELECT id, access_token FROM devices' +
+    client.query('SELECT devices.id, access_token FROM devices' +
       ' JOIN conditions ON devices.id = conditions.device_id' +
       ' JOIN locations ON devices.location_id = locations.id' +
       ' JOIN phones ON phones.phone_number = devices.phone_number' +
@@ -94,7 +94,7 @@ router.post('/', function (req, res) {
         }
       }
     );
-    Promise.all(apiPromises).then(console.log('promises satisfied'));
+    new Promise.all(apiPromises).then(console.log('promises satisfied'));
     console.log('end of post reached');
     res.sendStatus(200);
   });
