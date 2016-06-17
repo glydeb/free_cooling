@@ -102,7 +102,7 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
   function saveConditions() {
 
     // Put recommendation into object to be saved
-    currentConditions.recommendation = $scope.recommendation;
+    currentConditions.recommendation = $scope.recommendation.recommendation;
 
     // Save all data
     $http.post('/data', currentConditions).then(function (response) {
