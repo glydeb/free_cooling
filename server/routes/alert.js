@@ -7,8 +7,9 @@ var forecast = new Forecast({
   key: process.env.FORECAST_KEY,
   timeout: 2500
 });
-var locationForecasts = [];
-var deviceConditions = [];
+var apiPromises = [];
+var forecastCalls = [];
+var photonCalls = [];
 var lastRecommendations = [];
 
 router.post('/', function (req, res) {
@@ -31,13 +32,10 @@ router.post('/', function (req, res) {
         }
 
         if (result !== undefined) {
-          result.rows.forEach(function (row, i) {
-            forecast.fetch(row.latitude, row.longitude).then(function (result) {
-              row.push(result);
-            }).catch(function (error) {
-              console.log(error);
-            });
+          result.rows.forEach(function (row, i, array) {
+            apiPromises.push(forecast.fetch(row.latitude, row.longitude));
           });
+          forecastCalls = result.rows;
         }
       }
     );
@@ -55,13 +53,17 @@ router.post('/', function (req, res) {
         }
 
         if (result !== undefined) {
-          result.rows.forEach(function (row, i) {
-            this.push(queryPhoton('celsius'));
-            this.push(queryPhoton('rh'));
+          result.rows.forEach(function (row, i, array) {
+            apiPromises.push(queryPhoton('celsius'));
+            apiPromises.push(queryPhoton('rh'));
           });
+
+          photonCalls = result.rows;
+          console.log(result.rows);
         }
       }
     );
+
     client.query('SELECT devices.id, MAX(date_time) as last_recommended,' +
       ' recommend FROM devices' +
       ' JOIN conditions ON devices.id = conditions.device_id' +
@@ -69,21 +71,25 @@ router.post('/', function (req, res) {
       ' JOIN phones ON phones.phone_number = devices.phone_number' +
       ' WHERE allow_alerts = TRUE' +
       ' GROUP BY devices.id, recommend' +
-      ' ORDER BY last_recommended DESC',
+      ' ORDER BY devices.id, last_recommended DESC',
       function (err, result) {
+        done();
         if (err) {
-          done();
           return;
         }
 
         if (result !== undefined) {
           result.rows.forEach(function (row, i) {
-            this.push(queryPhoton('celsius'));
-            this.push(queryPhoton('rh'));
+            if (i % 2 === 0) {
+              lastRecommendations.push(row);
+            }
           });
+          console.log(lastRecommendations);
         }
       }
     );
+    Promise.all(apiPromises).then(console.log('promises satisfied'));
+    console.log('end of post reached')
   });
 });
 

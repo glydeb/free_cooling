@@ -65,5 +65,9 @@ th, td {
 }
 
 th {
-  background-color: #AAA;
+  background-color: #CCC;
+}
+
+table {
+  margin-bottom: 20px;
 }
