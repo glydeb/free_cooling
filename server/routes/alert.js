@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var request = require('request');
+var rp = require('request-promise');
 var pg = require('pg');
 var Forecast = require('forecast.io-bluebird');
 var forecast = new Forecast({
@@ -109,16 +109,10 @@ function queryPhoton(photonVariable, photonID, accessToken) {
   query += '/' + photonVariable + '?access_token=';
   query += accessToken;
 
-  var apiCall = baseURL + encodeURI(query);
+  var apiCall = { uri: baseURL + encodeURI(query) };
 
   // Request temperature from device
-  return request(apiCall, function (err, status, photonResponse) {
-    if (err) {
-      return -1;
-    } else {
-      return photonResponse;
-    }
-  });
+  return rp(apiCall);
 
 }
 

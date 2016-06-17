@@ -25,6 +25,7 @@
     "forecast.io-bluebird": "0.0.1",
     "pg": "^4.5.6",
     "request": "^2.72.0",
+    "request-promise": "^3.0.0",
     "sendgrid": "^2.0.0"
   }
 }
