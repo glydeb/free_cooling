@@ -91,7 +91,9 @@ router.post('/', function (req, res) {
           });
 
           console.log(lastRecommendations);
-          Promise.all(apiPromises).then(console.log('promises satisfied'));
+          console.log(photonCalls);
+          console.log(forecastCalls);
+          Promise.all(apiPromises).then(console.log('promises satisfied', apiPromises));
         }
       }
     );
