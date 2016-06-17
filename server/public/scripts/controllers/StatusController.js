@@ -10,8 +10,8 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
     highLimit: ((75.5 - 32) * 5 / 9),
     lowLimit: ((70.0 - 32) * 5 / 9)
   };
-  $scope.setpoint.wetLimit = absoluteHumidity($scope.setpoint.highLimit, 60);
-  $scope.setpoint.dryLimit = absoluteHumidity($scope.setpoint.lowLimit, 35);
+  $scope.setpoint.wetLimit = calc.absoluteHumidity($scope.setpoint.highLimit, 60);
+  $scope.setpoint.dryLimit = calc.absoluteHumidity($scope.setpoint.lowLimit, 35);
   var accessToken = '';
   var photonID = '';
   var currentConditions = {};
@@ -54,7 +54,11 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
             $scope.outdoor = response[2].data.currently;
             console.log(response[0].data.result);
             console.log(response[2].data);
-            recommend();
+            processApiReturns();
+            $scope.recommendation = recommend.algorithm($scope.indoor,
+               $scope.outdoor, $scope.setpoint);
+            saveConditions();
+
           });
 
         } else {
@@ -73,8 +77,7 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
     return $http.post('/forecast', location);
   }
 
-  function recommend() {
-    console.log('Recommend run');
+  function processApiReturns() {
 
     // convert photon output for display
     $scope.indoor.farenheit = (parseFloat($scope.indoor.celsius) * 1.8) + 32;
@@ -90,45 +93,15 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
 
     // Get outdoor conditions for comparison and indoor absolute humidity
     $scope.outdoor.celsius = ($scope.outdoor.temperature - 32) * 5 / 9;
-    $scope.outdoor.absHumidity = absoluteHumidity($scope.outdoor.celsius,
+    $scope.outdoor.absHumidity = calc.absoluteHumidity($scope.outdoor.celsius,
       $scope.outdoor.humidity * 100);
-    $scope.indoor.absHumidity = absoluteHumidity($scope.indoor.celsius,
+    $scope.indoor.absHumidity = calc.absoluteHumidity($scope.indoor.celsius,
       $scope.indoor.rh);
+  }
 
-    // Default recommendation/reason
-    $scope.recommendation = 'Open';
-    $scope.reason = 'Free conditioning available';
+  function saveConditions() {
 
-    // check 5 'reasons to close' - too cold inside, and colder outside,
-    // too warm inside and warmer outside, too dry inside and drier
-    // outside, too wet inside and wetter outside, and rain expected.
-    if ($scope.outdoor.precipProbability > 0.25) {
-      $scope.recommendation = 'Closed';
-      $scope.reason = 'Rain predicted';
-    }
-
-    if ($scope.outdoor.absHumidity > $scope.setpoint.wetLimit) {
-      $scope.recommendation = 'Closed';
-      $scope.reason = 'Too humid outside';
-    }
-
-    if ($scope.outdoor.absHumidity < $scope.setpoint.dryLimit &&
-        $scope.indoor.absHumidity < $scope.setpoint.dryLimit) {
-      $scope.recommendation = 'Closed';
-      $scope.reason = 'Too dry outside';
-    }
-
-    if ($scope.outdoor.celsius > $scope.setpoint.highLimit) {
-      $scope.recommendation = 'Closed';
-      $scope.reason = 'Too hot outside';
-    }
-
-    if ($scope.outdoor.celsius < $scope.setpoint.lowLimit &&
-        $scope.indoor.celsius < $scope.setpoint.lowLimit) {
-      $scope.recommendation = 'Closed';
-      $scope.reason = 'Too cold outside';
-    }
-
+    // Put recommendation into object to be saved
     currentConditions.recommendation = $scope.recommendation;
 
     // Save all data
@@ -138,7 +111,7 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
       } else {
         console.log('Boo!', response.data);
       }
-});
+    });
   }
 
   function queryPhoton(photonVariable) {
@@ -157,13 +130,4 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
 
   }
 
-  function absoluteHumidity(celsius, rh) {
-    var temp = parseFloat(celsius);
-    var logTen = (temp * 7.5) / (temp + 237.3);
-    var satPressure = Math.pow(10, logTen) * 6.11;
-    absHumidity = (satPressure * rh * 2.1674) / (celsius + 273.15);
-    var echo = celsius + 'deg. C, ' + rh + '% rh, ' + satPressure + 'mBar';
-    console.log(echo);
-    return absHumidity;
-  }
 }]);

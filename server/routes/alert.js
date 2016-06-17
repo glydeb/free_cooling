@@ -107,12 +107,14 @@ router.post('/', function (req, res) {
 });
 
 function sendAlerts() {
-
+  console.log('sendAlerts');
 }
 
 function createAlertQueue() {
   // get absolute humidity for indoor/outdoor/setpoints
-  // lo
+  // create objects to feed to recommend function
+  console.log('createAlertQueue');
+  }
 }
 
 function queryPhoton(photonVariable, photonID, accessToken) {
