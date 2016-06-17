@@ -47,7 +47,7 @@ router.post('/', function (req, res) {
       ' JOIN locations ON devices.location_id = locations.id' +
       ' JOIN phones ON phones.phone_number = devices.phone_number' +
       ' WHERE allow_alerts = TRUE' +
-      ' GROUP BY id, access_token',
+      ' GROUP BY devices.id, access_token',
       function (err, result) {
         console.log('Photon query', result);
         if (err) {
@@ -94,7 +94,7 @@ router.post('/', function (req, res) {
         }
       }
     );
-    new Promise.all(apiPromises).then(console.log('promises satisfied'));
+    Promise.all(apiPromises).then(console.log('promises satisfied'));
     console.log('end of post reached');
     res.sendStatus(200);
   });
