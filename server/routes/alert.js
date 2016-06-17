@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var rp = require('request-promise');
 var pg = require('pg');
+var moment = require('moment');
+var recommend = require('../public/scripts/recommend');
 var Forecast = require('forecast.io-bluebird');
 var forecast = new Forecast({
   key: process.env.FORECAST_KEY,
@@ -94,6 +96,8 @@ router.post('/', function (req, res) {
           console.log(photonCalls);
           console.log(forecastCalls);
           Promise.all(apiPromises).then(console.log('promises satisfied', apiPromises.length));
+          createAlertQueue();
+          sendAlerts();
         }
       }
     );
@@ -101,6 +105,15 @@ router.post('/', function (req, res) {
     res.sendStatus(200);
   });
 });
+
+function sendAlerts() {
+
+}
+
+function createAlertQueue() {
+  // get absolute humidity for indoor/outdoor/setpoints
+  // lo
+}
 
 function queryPhoton(photonVariable, photonID, accessToken) {
   // Assemble request to paritcle API
