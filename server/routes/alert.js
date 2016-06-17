@@ -49,6 +49,7 @@ router.post('/', function (req, res) {
       ' WHERE allow_alerts = TRUE' +
       ' GROUP BY id, access_token',
       function (err, result) {
+        console.log('Photon query', result);
         if (err) {
           done();
           return;
@@ -56,9 +57,9 @@ router.post('/', function (req, res) {
 
         if (result !== undefined) {
           result.rows.forEach(function (row, i, array) {
-            apiPromises.push(queryPhoton('celsius'));
+            apiPromises.push(queryPhoton('celsius', row.id, row.access_token));
             console.log('celsius queried', apiPromises);
-            apiPromises.push(queryPhoton('rh'));
+            apiPromises.push(queryPhoton('rh', row.id, row.access_token));
             console.log('rh queried', apiPromises);
           });
 
@@ -95,6 +96,7 @@ router.post('/', function (req, res) {
     );
     Promise.all(apiPromises).then(console.log('promises satisfied'));
     console.log('end of post reached');
+    res.sendStatus(200);
   });
 });
 
