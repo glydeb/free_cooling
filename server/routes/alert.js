@@ -89,7 +89,7 @@ router.post('/', function (req, res) {
       }
     );
     Promise.all(apiPromises).then(console.log('promises satisfied'));
-    console.log('end of post reached')
+    console.log('end of post reached');
   });
 });
 
