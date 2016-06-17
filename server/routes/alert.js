@@ -93,7 +93,7 @@ router.post('/', function (req, res) {
           console.log(lastRecommendations);
           console.log(photonCalls);
           console.log(forecastCalls);
-          Promise.all(apiPromises).then(console.log('promises satisfied', apiPromises));
+          Promise.all(apiPromises).then(console.log('promises satisfied', apiPromises.length));
         }
       }
     );
