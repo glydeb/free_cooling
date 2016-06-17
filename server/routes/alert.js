@@ -114,7 +114,6 @@ function createAlertQueue() {
   // get absolute humidity for indoor/outdoor/setpoints
   // create objects to feed to recommend function
   console.log('createAlertQueue');
-  }
 }
 
 function queryPhoton(photonVariable, photonID, accessToken) {
