@@ -34,7 +34,9 @@ router.post('/', function (req, res) {
         if (result !== undefined) {
           result.rows.forEach(function (row, i, array) {
             apiPromises.push(forecast.fetch(row.latitude, row.longitude));
+            console.log('forecast queried', apiPromises);
           });
+
           forecastCalls = result.rows;
         }
       }
@@ -55,7 +57,9 @@ router.post('/', function (req, res) {
         if (result !== undefined) {
           result.rows.forEach(function (row, i, array) {
             apiPromises.push(queryPhoton('celsius'));
+            console.log('celsius queried', apiPromises);
             apiPromises.push(queryPhoton('rh'));
+            console.log('rh queried', apiPromises);
           });
 
           photonCalls = result.rows;
@@ -84,6 +88,7 @@ router.post('/', function (req, res) {
               lastRecommendations.push(row);
             }
           });
+
           console.log(lastRecommendations);
         }
       }
