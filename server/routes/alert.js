@@ -91,10 +91,10 @@ router.post('/', function (req, res) {
           });
 
           console.log(lastRecommendations);
+          Promise.all(apiPromises).then(console.log('promises satisfied'));
         }
       }
     );
-    Promise.all(apiPromises).then(console.log('promises satisfied'));
     console.log('end of post reached');
     res.sendStatus(200);
   });
