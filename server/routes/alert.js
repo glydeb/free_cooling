@@ -71,13 +71,13 @@ router.post('/', function (req, res) {
       }
     );
 
-    client.query('SELECT devices.id, MAX(date_time) as last_recommended,' +
+    client.query('SELECT devices.id, MAX(date_time) as last_recommended, latitude, longitude,' +
       ' recommend FROM devices' +
       ' JOIN conditions ON devices.id = conditions.device_id' +
       ' JOIN locations ON devices.location_id = locations.id' +
       ' JOIN phones ON phones.phone_number = devices.phone_number' +
       ' WHERE allow_alerts = TRUE' +
-      ' GROUP BY devices.id, recommend' +
+      ' GROUP BY devices.id, recommend, latitude, longitude' +
       ' ORDER BY devices.id, last_recommended DESC',
       function (err, result) {
         done();
@@ -92,12 +92,22 @@ router.post('/', function (req, res) {
             }
           });
 
+          var setpoint = {
+            highLimit: ((75.5 - 32) * 5 / 9),
+            lowLimit: ((70.0 - 32) * 5 / 9)
+          };
+
+          setpoint.wetLimit = calc.absoluteHumidity(setpoint.highLimit, 60);
+          setpoint.dryLimit = calc.absoluteHumidity(setpoint.lowLimit, 35);
           console.log(lastRecommendations);
-          console.log(photonCalls);
-          console.log(forecastCalls);
-          Promise.all(apiPromises).then(console.log('promises satisfied', apiPromises.length));
+          Promise.all(apiPromises).then(function (results) {
+            // load objects for recommendation calculation
+            console.log('promise then');
+          });
           createAlertQueue();
-          sendAlerts();
+          if (alerts.length > 0) {
+            sendAlerts();
+          }
         }
       }
     );
@@ -108,6 +118,10 @@ router.post('/', function (req, res) {
 
 function sendAlerts() {
   console.log('sendAlerts');
+  /*
+    // Sample textbelt text message post:
+     curl -X POST http://textbelt.com/text -d number=5551234567 -d "message=I sent this message for free with textbelt.com"
+  */
 }
 
 function createAlertQueue() {
