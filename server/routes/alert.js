@@ -220,9 +220,10 @@ function sendAlerts(queue) {
     request = 'http://textbelt.com/text?number=';
     request += phone + '&message=' + queue[phone];
     options.uri = request;
+    console.log(options);
     rp(options).then(
       console.log('alert sent to ' + phone)
-    ).catch(console.log('failed to send to ' + phone));
+    ).catch(console.log('failed to send to ' + phone + err));
   }
 }
 
