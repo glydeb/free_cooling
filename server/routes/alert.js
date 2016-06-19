@@ -229,17 +229,16 @@ function createAlertQueue() {
 
 function queryPhoton(photonVariable, photonID, accessToken) {
   // Assemble request to paritcle API
-  var baseURL = 'https://api.particle.io/v1/devices/';
-
-  // Formulate request to device
-  var query = photonID;
-  query += '/' + photonVariable + '?access_token=';
-  query += accessToken;
-
-  var apiCall = baseURL + encodeURI(query);
+  var options = {
+    uri: 'https://api.particle.io/v1/devices/' + photonID + '/' +
+     photonVariable,
+    qs: {
+      access_token: accessToken
+    }
+  };
 
   // Request temperature from device
-  return rp(apiCall);
+  return rp(options);
 
 }
 
