@@ -250,6 +250,7 @@ function queryPhoton(photonVariable, photonID, accessToken) {
 
     request.send(); //send the request
   });
+  return promise;
 }
 
 module.exports = router;
