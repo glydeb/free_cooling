@@ -36,7 +36,7 @@ router.post('/', function (req, res) {
         if (result !== undefined) {
           result.rows.forEach(function (row, i, array) {
             apiPromises.push(forecast.fetch(row.latitude, row.longitude));
-            console.log('forecast queried', apiPromises);
+            // console.log('forecast queried', apiPromises);
           });
 
           forecastCalls = result.rows;
@@ -51,7 +51,7 @@ router.post('/', function (req, res) {
       ' WHERE allow_alerts = TRUE' +
       ' GROUP BY devices.id, access_token',
       function (err, result) {
-        console.log('Photon query', result);
+        // console.log('Photon query', result);
         if (err) {
           done();
           return;
@@ -60,13 +60,13 @@ router.post('/', function (req, res) {
         if (result !== undefined) {
           result.rows.forEach(function (row, i, array) {
             apiPromises.push(queryPhoton('celsius', row.id, row.access_token));
-            console.log('celsius queried', apiPromises);
+            // console.log('celsius queried', apiPromises);
             apiPromises.push(queryPhoton('humidity', row.id, row.access_token));
-            console.log('rh queried', apiPromises);
+            // console.log('rh queried', apiPromises);
           });
 
           photonCalls = result.rows;
-          console.log(result.rows);
+          // console.log(result.rows);
         }
       }
     );
@@ -101,12 +101,13 @@ router.post('/', function (req, res) {
 
           setpoint.wetLimit = calc.absoluteHumidity(setpoint.highLimit, 60);
           setpoint.dryLimit = calc.absoluteHumidity(setpoint.lowLimit, 35);
-          console.log(evaluation);
+          console.log('Evaluation array', evaluation);
           Promise.all(apiPromises).then(function (results) {
             // parse returns of API calls
             results.forEach(function (row, i) {
               // if there's a currently key, it's a forecast.io return
               if (row.data.currently !== undefined) {
+                console.log('Processing forecast return');
                 // loop through the recommendations and pair up the forecasts
                 for (var j = 0; j < evaluation.length; j++) {
                   // if the lat & long matches, add the forecast object
@@ -128,9 +129,11 @@ router.post('/', function (req, res) {
                     // character at position 60 is either a 'c' or an 'r'
                     // c is a temp reading, r is humidity.  Store accordingly.
                     if (row.data.config.url.substr(60, 1) === 'c') {
+                      console.log('Storing celsius data');
                       evaluation[k].indoor.celsius = row.data.result;
                     } else {
                       evaluation[k].indoor.rh = row.data.result;
+                      console.log('Storing humidity data');
                     }
 
                     // can only be one match
@@ -155,6 +158,7 @@ router.post('/', function (req, res) {
               var newRecommend = recommend.algorithm(element.indoor,
                 element.outdoor, setpoint);
               if (newRecommend !== element.last_recommended) {
+                console.log('change in recommendation found');
                 evaluation[i].last_recommended = newRecommend;
                 var alertString = makeAlertString(alertIntro, newRecommend,
                   alertQueue[element.phone_number]);
@@ -171,6 +175,7 @@ router.post('/', function (req, res) {
             });
 
             if (alertQueue !== {}) {
+              console.log('send alerts called');
               sendAlerts(alertQueue);
             }
           });
