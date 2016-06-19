@@ -154,6 +154,7 @@ router.post('/', function (req, res) {
             console.log('calculating absolute humidity');
             console.log(evaluation);
             var alertQueue = {};
+            var alertString = '';
             evaluation.forEach(function (element, i) {
               console.log('Start of evaluation forEach loop, iteration: ', i);
               evaluation[i].outdoor.absHumidity =
@@ -174,7 +175,8 @@ router.post('/', function (req, res) {
               if (newRecommend.recommendation !== element.recommend) {
                 console.log('change in recommendation found');
                 evaluation[i].recommend = newRecommend;
-                var alertString = makeAlertString(alertIntro, newRecommend,
+                console.log('new recommendation stored in object');
+                alertString = makeAlertString(alertIntro, newRecommend,
                   element.phone_number);
                 console.log('Alert string created:', alertString);
 
@@ -218,21 +220,25 @@ function sendAlerts(queue) {
 }
 
 function makeAlertString(alertIntro, newRec, existAlert) {
+  console.log('makeAlertString function entered');
   var alertString = '';
   if (alertQueue[existAlert] === undefined) {
     alertString = alertIntro;
   } else {
     alertString = ' and ';
   }
+  console.log('If alert to phone exists logic passed');
 
   if (newRec === 'Open') {
     alertString += 'opening';
   } else {
     alertString += 'closing';
   }
+  console.log('action text determined');
 
   alertString += 'the windows near "';
   alertString += element.nickname + '".';
+  console.log('alert text finalized');
   return alertString;
 }
 
