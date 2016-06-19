@@ -221,7 +221,6 @@ function sendAlerts(queue) {
 }
 
 function makeAlertString(alertIntro, newRec, phone) {
-  console.log('makeAlertString function entered');
   var alertString = '';
   console.log('Object:', alertQueue);
   console.log('phone parameter:', phone);
