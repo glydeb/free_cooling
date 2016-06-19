@@ -12,7 +12,7 @@ var forecast = new Forecast({
 var apiPromises = [];
 var forecastCalls = [];
 var photonCalls = [];
-var lastRecommendations = [];
+var evaluation = [];
 
 router.post('/', function (req, res) {
 
@@ -61,7 +61,7 @@ router.post('/', function (req, res) {
           result.rows.forEach(function (row, i, array) {
             apiPromises.push(queryPhoton('celsius', row.id, row.access_token));
             console.log('celsius queried', apiPromises);
-            apiPromises.push(queryPhoton('rh', row.id, row.access_token));
+            apiPromises.push(queryPhoton('humidity', row.id, row.access_token));
             console.log('rh queried', apiPromises);
           });
 
@@ -71,13 +71,15 @@ router.post('/', function (req, res) {
       }
     );
 
-    client.query('SELECT devices.id, MAX(date_time) as last_recommended, latitude, longitude,' +
-      ' recommend FROM devices' +
+    client.query('SELECT devices.id, MAX(date_time) as last_recommended,' +
+      ' latitude, longitude, phone_number, start_time, end_time,' +
+      ' recommend, nickname FROM devices' +
       ' JOIN conditions ON devices.id = conditions.device_id' +
       ' JOIN locations ON devices.location_id = locations.id' +
       ' JOIN phones ON phones.phone_number = devices.phone_number' +
       ' WHERE allow_alerts = TRUE' +
-      ' GROUP BY devices.id, recommend, latitude, longitude' +
+      ' GROUP BY devices.id, recommend, latitude, longitude, phone_number,' +
+      ' start_time, end_time, nickname' +
       ' ORDER BY devices.id, last_recommended DESC',
       function (err, result) {
         done();
@@ -88,7 +90,7 @@ router.post('/', function (req, res) {
         if (result !== undefined) {
           result.rows.forEach(function (row, i) {
             if (i % 2 === 0) {
-              lastRecommendations.push(row);
+              evaluation.push(row);
             }
           });
 
@@ -99,15 +101,80 @@ router.post('/', function (req, res) {
 
           setpoint.wetLimit = calc.absoluteHumidity(setpoint.highLimit, 60);
           setpoint.dryLimit = calc.absoluteHumidity(setpoint.lowLimit, 35);
-          console.log(lastRecommendations);
+          console.log(evaluation);
           Promise.all(apiPromises).then(function (results) {
-            // load objects for recommendation calculation
-            console.log('promise then');
+            // parse returns of API calls
+            results.forEach(function (row, i) {
+              // if there's a currently key, it's a forecast.io return
+              if (row.data.currently !== undefined) {
+                // loop through the recommendations and pair up the forecasts
+                for (var j = 0; j < evaluation.length; j++) {
+                  // if the lat & long matches, add the forecast object
+                  // to the recommendation object
+                  if (evaluation[j].latitude === row.data.latitude &&
+                    evaluation[j].longitude === row.data.longitude) {
+                    evaluation[j].outdoor = row.data.currently;
+                  }
+                }
+
+              // if it's not a forecast, it's a device reading
+              } else {
+                // loop through the recommendations and pair up the forecasts
+                for (var k = 0; k < evaluation.length; k++) {
+                  // if the device ID matches, add the reading
+                  // to the recommendation object
+                  if (evaluation[k].id ===
+                    row.data.config.url.substr(35, 24)) {
+                    // character at position 60 is either a 'c' or an 'r'
+                    // c is a temp reading, r is humidity.  Store accordingly.
+                    if (row.data.config.url.substr(60, 1) === 'c') {
+                      evaluation[k].indoor.celsius = row.data.result;
+                    } else {
+                      evaluation[k].indoor.rh = row.data.result;
+                    }
+
+                    // can only be one match
+                    break;
+                  }
+                }
+              }
+
+            });
+
+            // add absolute humidity to evaluation objects
+            evaluation.forEach(function (element, i) {
+              evaluation[i].outdoor.absHumidity =
+                calc.ababsoluteHumidity(element.outdoor.celsius,
+                element.outdoor.humidity * 100);
+              evaluation[i].indoor.absHumidity =
+                calc.ababsoluteHumidity(element.indoor.celsius,
+                element.indoor.rh);
+
+              // get recommendation for each evaluation and compare to last
+              // recommendation, and push to alert queue if different
+              var newRecommend = recommend.algorithm(element.indoor,
+                element.outdoor, setpoint);
+              if (newRecommend !== element.last_recommended) {
+                evaluation[i].last_recommended = newRecommend;
+                var alertString = makeAlertString(alertIntro, newRecommend,
+                  alertQueue[element.phone_number]);
+
+                // create alert if it doesn't exist, otherwise append to it.
+                if (alertQueue[element.phone_number] === undefined) {
+                  alertQueue[element.phone_number] = alertString;
+                } else {
+                  alertQueue[element.phone_number].replace(/\.$/,
+                    alertString);
+                }
+              }
+
+            });
+
+            if (alertQueue !== {}) {
+              sendAlerts(alertQueue);
+            }
           });
-          createAlertQueue();
-          if (alerts.length > 0) {
-            sendAlerts();
-          }
+
         }
       }
     );
@@ -116,12 +183,37 @@ router.post('/', function (req, res) {
   });
 });
 
-function sendAlerts() {
+function sendAlerts(queue) {
   console.log('sendAlerts');
-  /*
-    // Sample textbelt text message post:
-     curl -X POST http://textbelt.com/text -d number=5551234567 -d "message=I sent this message for free with textbelt.com"
-  */
+  var request = '';
+  var options = { method: 'POST' };
+  for (var phone in queue) {
+    request = 'http://textbelt.com/text?number=';
+    request += phone + '&message=' + queue[phone];
+    options.uri = request;
+    rp(options).then(
+      console.log('alert sent to ' + phone)
+    ).catch(console.log('failed to send to ' + phone));
+  }
+}
+
+function makeAlertString(alertIntro, newRec, existAlert) {
+  var alertString = '';
+  if (existAlert === undefined) {
+    alertString = alertIntro;
+  } else {
+    alertString = ' and ';
+  }
+
+  if (newRec === 'Open') {
+    alertString += 'opening';
+  } else {
+    alertString += 'closing';
+  }
+
+  alertString += 'the windows near "';
+  alertString += element.nickname + '".';
+  return alertString;
 }
 
 function createAlertQueue() {
