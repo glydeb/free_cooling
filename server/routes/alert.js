@@ -152,6 +152,7 @@ router.post('/', function (req, res) {
             // add absolute humidity to evaluation objects
             console.log('calculating absolute humidity');
             console.log(evaluation);
+            var alertQueue = {};
             evaluation.forEach(function (element, i) {
               console.log('Start of evaluation forEach loop, iteration: ', i);
               evaluation[i].outdoor.absHumidity =
@@ -167,13 +168,14 @@ router.post('/', function (req, res) {
               // recommendation, and push to alert queue if different
               var newRecommend = recommend.algorithm(element.indoor,
                 element.outdoor, setpoint);
-              console.log('newRecommend:', newRecommend );
-              console.log('element.last_recommended');
+              console.log('newRecommend:', newRecommend);
+              console.log('element.recommend');
               if (newRecommend.recommendation !== element.recommend) {
                 console.log('change in recommendation found');
-                evaluation[i].last_recommended = newRecommend;
+                evaluation[i].recommend = newRecommend;
                 var alertString = makeAlertString(alertIntro, newRecommend,
                   alertQueue[element.phone_number]);
+                console.log('Alert string created:', alertString);
 
                 // create alert if it doesn't exist, otherwise append to it.
                 if (alertQueue[element.phone_number] === undefined) {
