@@ -234,7 +234,11 @@ function queryPhoton(photonVariable, photonID, accessToken) {
      photonVariable,
     qs: {
       access_token: accessToken
-    }
+    },
+    headers: {
+      'User-Agent': 'Request-Promise'
+    },
+    json: true
   };
 
   // Request temperature from device
