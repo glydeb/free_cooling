@@ -155,6 +155,7 @@ router.post('/', function (req, res) {
             console.log(evaluation);
             var alertQueue = {};
             var alertString = '';
+            var alertsFound = false;
             evaluation.forEach(function (element, i) {
               console.log('Start of evaluation forEach loop, iteration: ', i);
               evaluation[i].outdoor.absHumidity =
@@ -181,17 +182,17 @@ router.post('/', function (req, res) {
                 console.log('Alert string created:', alertString);
 
                 // create alert if it doesn't exist, otherwise append to it.
-                if (alertQueue[element.phone_number] === undefined) {
-                  alertQueue[element.phone_number] = alertString;
-                } else {
+                if (alertQueue.hasOwnProperty(element.phone_number)) {
                   alertQueue[element.phone_number].replace(/\.$/,
                     alertString);
+                } else {
+                  alertQueue[element.phone_number] = alertString;
                 }
               }
 
             });
 
-            if (alertQueue !== {}) {
+            if (alertsFound) {
               console.log('send alerts called');
               sendAlerts(alertQueue);
             }
@@ -219,13 +220,13 @@ function sendAlerts(queue) {
   }
 }
 
-function makeAlertString(alertIntro, newRec, existAlert) {
+function makeAlertString(alertIntro, newRec, phone) {
   console.log('makeAlertString function entered');
   var alertString = '';
-  if (alertQueue[existAlert] === undefined) {
-    alertString = alertIntro;
-  } else {
+  if (alertQueue.hasOwnProperty(phone)) {
     alertString = ' and ';
+  } else {
+    alertString = alertIntro;
   }
   console.log('If alert to phone exists logic passed');
 
