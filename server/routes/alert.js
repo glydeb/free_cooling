@@ -218,11 +218,10 @@ function sendAlerts(queue) {
   for (var phone in queue) {
     console.log('sending to: ', phone);
     options.uri = 'http://textbelt.com/text';
-    options.qs = {
+    options.form = {
       number: phone,
       message: queue[phone]
     };
-    options.header = { 'content-type': 'application/x-www-form-urlencoded' };
     console.log(options);
     rp(options).then(
       console.log('alert sent to ' + phone)
