@@ -107,6 +107,7 @@ router.post('/', function (req, res) {
           Promise.all(apiPromises).then(function (results) {
             // parse returns of API calls
             results.forEach(function (row, i) {
+              console.log('Entered results process loop, index: ', i);
               // if there's a currently key, it's a forecast.io return
               if (row.data.currently !== undefined) {
                 console.log('Processing forecast return');
