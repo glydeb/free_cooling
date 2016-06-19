@@ -169,12 +169,12 @@ router.post('/', function (req, res) {
               var newRecommend = recommend.algorithm(element.indoor,
                 element.outdoor, setpoint);
               console.log('newRecommend:', newRecommend);
-              console.log('element.recommend');
+              console.log('element.recommend', element.recommend);
               if (newRecommend.recommendation !== element.recommend) {
                 console.log('change in recommendation found');
                 evaluation[i].recommend = newRecommend;
                 var alertString = makeAlertString(alertIntro, newRecommend,
-                  alertQueue[element.phone_number]);
+                  element.phone_number);
                 console.log('Alert string created:', alertString);
 
                 // create alert if it doesn't exist, otherwise append to it.
@@ -218,7 +218,7 @@ function sendAlerts(queue) {
 
 function makeAlertString(alertIntro, newRec, existAlert) {
   var alertString = '';
-  if (existAlert === undefined) {
+  if (alertQueue[existAlert] === undefined) {
     alertString = alertIntro;
   } else {
     alertString = ' and ';
