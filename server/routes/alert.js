@@ -155,6 +155,7 @@ router.post('/', function (req, res) {
             console.log(evaluation);
             var alertQueue = {};
             var alertString = '';
+            var existAlert = false;
             var alertsFound = false;
             evaluation.forEach(function (element, i) {
               console.log('Start of evaluation forEach loop, iteration: ', i);
@@ -175,10 +176,13 @@ router.post('/', function (req, res) {
               console.log('element.recommend', element.recommend);
               if (newRecommend.recommendation !== element.recommend) {
                 console.log('change in recommendation found');
+                alertsFound = true;
                 evaluation[i].recommend = newRecommend.recommendation;
                 console.log('new recommendation stored in object');
+                existAlert = alertQueue.hasOwnProperty(element.phone_number);
                 alertString = makeAlertString(alertIntro,
-                  newRecommend.recommendation, element.phone_number);
+                  newRecommend.recommendation, existAlert,
+                  element.nickname);
                 console.log('Alert string created:', alertString);
 
                 // create alert if it doesn't exist, otherwise append to it.
@@ -220,11 +224,10 @@ function sendAlerts(queue) {
   }
 }
 
-function makeAlertString(alertIntro, newRec, phone) {
+function makeAlertString(alertIntro, newRec, existAlert, nickname) {
   var alertString = '';
-  console.log('phone parameter:', phone);
-  console.log('Test expression:', alertQueue.hasOwnProperty(phone));
-  if (alertQueue.hasOwnProperty(phone)) {
+  console.log('Enter makeAlertString function');
+  if (existAlert) {
     alertString = ' and ';
   } else {
     alertString = alertIntro;
@@ -239,7 +242,7 @@ function makeAlertString(alertIntro, newRec, phone) {
   console.log('action text determined');
 
   alertString += 'the windows near "';
-  alertString += element.nickname + '".';
+  alertString += nickname + '".';
   console.log('alert text finalized');
   return alertString;
 }
