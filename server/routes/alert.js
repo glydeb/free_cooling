@@ -218,12 +218,12 @@ function sendAlerts(queue) {
   for (var phone in queue) {
     console.log('sending to: ', phone);
     request = 'http://textbelt.com/text?number=';
-    request += phone + '&message=' + queue[phone];
+    request += phone + '&message=' + encodeURI(queue[phone]);
     options.uri = request;
     console.log(options);
     rp(options).then(
       console.log('alert sent to ' + phone)
-    ).catch(console.log('failed to send to ' + phone + err));
+    ).catch(console.log(error));
   }
 }
 
