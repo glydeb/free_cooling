@@ -1,9 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var request = require('request');
-var Promise = require('bluebird');
-Promise.promisifyAll(require('request'));
 var pg = require('pg');
+var Particle = require('particle-api-js');
+var particle = new Particle();
 var moment = require('moment');
 var recommend = require('../public/scripts/recommend');
 var calc = require('../public/scripts/calc');
@@ -107,6 +106,7 @@ router.post('/', function (req, res) {
           setpoint.dryLimit = calc.absoluteHumidity(setpoint.lowLimit, 35);
           Promise.all(apiPromises).then(function (results) {
             console.log('begin apiPromises: ', results);
+
             // parse returns of API calls
             results.forEach(function (row, i) {
               console.log('Entered results process loop, index: ', i);
@@ -231,10 +231,13 @@ function createAlertQueue() {
 
 function queryPhoton(photonVariable, photonID, accessToken) {
   // Assemble request to paritcle API
-  var url = 'https://api.particle.io/v1/devices/' + photonID + '/' +
-     photonVariable + '?access_token=' + accessToken;
+  var options = {
+    deviceId: photonID,
+    name: photonVariable,
+    auth: accessToken
+  };
 
-  return request.getAsync(url);
+  return particle.getVariable(options);
 }
 
 module.exports = router;

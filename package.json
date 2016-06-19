@@ -24,6 +24,7 @@
     "express": "^4.13.4",
     "forecast.io-bluebird": "0.0.1",
     "moment": "^2.13.0",
+    "particle-api-js": "^5.3.0",
     "pg": "^4.5.6",
     "request": "^2.72.0",
     "request-promise": "^3.0.0",
