@@ -120,8 +120,8 @@ router.post('/', function (req, res) {
                 for (var j = 0; j < evaluation.length; j++) {
                   // if the lat & long matches, add the forecast object
                   // to the recommendation object
-                  if (evaluation[j].latitude === row.latitude &&
-                    evaluation[j].longitude === row.longitude) {
+                  if (evaluation[j].latitude == row.latitude &&
+                    evaluation[j].longitude == row.longitude) {
                     evaluation[j].outdoor = row.currently;
                   }
                 }
