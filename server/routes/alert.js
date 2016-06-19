@@ -4,6 +4,7 @@ var rp = require('request-promise');
 var pg = require('pg');
 var moment = require('moment');
 var recommend = require('../public/scripts/recommend');
+var calc = require('../public/scripts/calc');
 var Forecast = require('forecast.io-bluebird');
 var forecast = new Forecast({
   key: process.env.FORECAST_KEY,
@@ -84,6 +85,7 @@ router.post('/', function (req, res) {
       function (err, result) {
         done();
         if (err) {
+          console.log(err);
           return;
         }
 
