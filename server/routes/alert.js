@@ -175,10 +175,10 @@ router.post('/', function (req, res) {
               console.log('element.recommend', element.recommend);
               if (newRecommend.recommendation !== element.recommend) {
                 console.log('change in recommendation found');
-                evaluation[i].recommend = newRecommend;
+                evaluation[i].recommend = newRecommend.recommendation;
                 console.log('new recommendation stored in object');
-                alertString = makeAlertString(alertIntro, newRecommend,
-                  element.phone_number);
+                alertString = makeAlertString(alertIntro,
+                  newRecommend.recommendation, element.phone_number);
                 console.log('Alert string created:', alertString);
 
                 // create alert if it doesn't exist, otherwise append to it.
@@ -223,6 +223,9 @@ function sendAlerts(queue) {
 function makeAlertString(alertIntro, newRec, phone) {
   console.log('makeAlertString function entered');
   var alertString = '';
+  console.log('Test expression:', alertQueue.hasOwnProperty(phone));
+  console.log('Object:', alertQueue);
+  console.log('phone parameter:', phone);
   if (alertQueue.hasOwnProperty(phone)) {
     alertString = ' and ';
   } else {
