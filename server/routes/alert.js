@@ -163,7 +163,7 @@ router.post('/', function (req, res) {
                 element.outdoor, setpoint);
               console.log('newRecommend:', newRecommend );
               console.log('element.last_recommended');
-              if (newRecommend !== element.last_recommended) {
+              if (newRecommend.recommendation !== element.recommend) {
                 console.log('change in recommendation found');
                 evaluation[i].last_recommended = newRecommend;
                 var alertString = makeAlertString(alertIntro, newRecommend,
