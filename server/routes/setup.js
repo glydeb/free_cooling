@@ -117,27 +117,4 @@ function makeID(len) {
   return text.join().replace(/,/g, '');
 }
 
-/*
-router.get('/', function (req, res) {
-  Pet.find({}, function (err, movies) {
-    if (err) {
-      res.sendStatus(500);
-      return;
-    }
-
-    res.send(movies);
-  });
-});
-
-router.delete('/:id', function (req, res) {
-  Pet.findByIdAndRemove(req.params.id, function (err) {
-    if (err) {
-      res.sendStatus(500);
-      return;
-    }
-
-    res.sendStatus(204);
-  });
-});
-*/
 module.exports = router;

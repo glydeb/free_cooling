@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var rp = require('request-promise');
+var Promise = require('bluebird');
+Promise.promisifyAll(require('request'));
 var pg = require('pg');
 var moment = require('moment');
 var recommend = require('../public/scripts/recommend');
@@ -232,25 +233,7 @@ function queryPhoton(photonVariable, photonID, accessToken) {
   var url = 'https://api.particle.io/v1/devices/' + photonID + '/' +
      photonVariable + '?access_token=' + accessToken;
 
-  var promise = new Promise(function (resolve, reject) {
-    var request = new XMLHttpRequest();
-
-    request.open('GET', url);
-    request.onload = function () {
-      if (request.status == 200) {
-        resolve(request.response); // we got data here, so resolve the Promise
-      } else {
-        reject(Error(request.statusText)); // status is not 200 OK, so reject
-      }
-    };
-
-    request.onerror = function () {
-      reject(Error('Error fetching data.')); // error occurred, reject the  Promise
-    };
-
-    request.send(); //send the request
-  });
-  return promise;
+  return request.getAsync(url);
 }
 
 module.exports = router;
