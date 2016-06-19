@@ -15,6 +15,7 @@ var apiPromises = [];
 var forecastCalls = [];
 var photonCalls = [];
 var evaluation = [];
+var alertIntro = 'Free cooling recommends ';
 
 router.post('/', function (req, res) {
 
