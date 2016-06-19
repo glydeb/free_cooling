@@ -146,7 +146,9 @@ router.post('/', function (req, res) {
             });
 
             // add absolute humidity to evaluation objects
+            console.log('calculating absolute humidity');
             evaluation.forEach(function (element, i) {
+              console.log('Start of evaluation forEach loop, iteration: ', i);
               evaluation[i].outdoor.absHumidity =
                 calc.ababsoluteHumidity(element.outdoor.celsius,
                 element.outdoor.humidity * 100);
