@@ -72,14 +72,14 @@ router.post('/', function (req, res) {
     );
 
     client.query('SELECT devices.id, MAX(date_time) as last_recommended,' +
-      ' latitude, longitude, phone_number, start_time, end_time,' +
+      ' latitude, longitude, devices.phone_number, start_time, end_time,' +
       ' recommend, nickname FROM devices' +
       ' JOIN conditions ON devices.id = conditions.device_id' +
       ' JOIN locations ON devices.location_id = locations.id' +
       ' JOIN phones ON phones.phone_number = devices.phone_number' +
       ' WHERE allow_alerts = TRUE' +
-      ' GROUP BY devices.id, recommend, latitude, longitude, phone_number,' +
-      ' start_time, end_time, nickname' +
+      ' GROUP BY devices.id, recommend, latitude, longitude,' +
+      ' devices.phone_number, start_time, end_time, nickname' +
       ' ORDER BY devices.id, last_recommended DESC',
       function (err, result) {
         done();
