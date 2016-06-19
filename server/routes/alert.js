@@ -104,6 +104,7 @@ router.post('/', function (req, res) {
           setpoint.wetLimit = calc.absoluteHumidity(setpoint.highLimit, 60);
           setpoint.dryLimit = calc.absoluteHumidity(setpoint.lowLimit, 35);
           Promise.all(apiPromises).then(function (results) {
+            console.log('begin apiPromises: ', apiPromises);
             // parse returns of API calls
             results.forEach(function (row, i) {
               console.log('Entered results process loop, index: ', i);
