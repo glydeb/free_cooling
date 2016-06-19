@@ -235,9 +235,6 @@ function queryPhoton(photonVariable, photonID, accessToken) {
     qs: {
       access_token: accessToken
     },
-    headers: {
-      'User-Agent': 'Request-Promise'
-    },
     json: true
   };
 
