@@ -229,18 +229,27 @@ function createAlertQueue() {
 
 function queryPhoton(photonVariable, photonID, accessToken) {
   // Assemble request to paritcle API
-  var options = {
-    uri: 'https://api.particle.io/v1/devices/' + photonID + '/' +
-     photonVariable,
-    qs: {
-      access_token: accessToken
-    },
-    json: true
-  };
+  var url = 'https://api.particle.io/v1/devices/' + photonID + '/' +
+     photonVariable + '?access_token=' + accessToken;
 
-  // Request temperature from device
-  return rp(options);
+  var promise = new Promise(function (resolve, reject) {
+    var request = new XMLHttpRequest();
 
+    request.open('GET', url);
+    request.onload = function () {
+      if (request.status == 200) {
+        resolve(request.response); // we got data here, so resolve the Promise
+      } else {
+        reject(Error(request.statusText)); // status is not 200 OK, so reject
+      }
+    };
+
+    request.onerror = function () {
+      reject(Error('Error fetching data.')); // error occurred, reject the  Promise
+    };
+
+    request.send(); //send the request
+  });
 }
 
 module.exports = router;
