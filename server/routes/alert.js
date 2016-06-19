@@ -222,7 +222,6 @@ function sendAlerts(queue) {
 
 function makeAlertString(alertIntro, newRec, phone) {
   var alertString = '';
-  console.log('Object:', alertQueue);
   console.log('phone parameter:', phone);
   console.log('Test expression:', alertQueue.hasOwnProperty(phone));
   if (alertQueue.hasOwnProperty(phone)) {
