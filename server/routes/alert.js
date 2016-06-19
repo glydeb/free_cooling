@@ -110,17 +110,17 @@ router.post('/', function (req, res) {
             // parse returns of API calls
             results.forEach(function (row, i) {
               console.log('Entered results process loop, index: ', i);
-              console.log('result to process: ', row.data);
+              console.log('result to process: ', row);
               // if there's a currently key, it's a forecast.io return
-              if (row.data.currently !== undefined) {
+              if (row.currently !== undefined) {
                 console.log('Processing forecast return');
                 // loop through the recommendations and pair up the forecasts
                 for (var j = 0; j < evaluation.length; j++) {
                   // if the lat & long matches, add the forecast object
                   // to the recommendation object
-                  if (evaluation[j].latitude === row.data.latitude &&
-                    evaluation[j].longitude === row.data.longitude) {
-                    evaluation[j].outdoor = row.data.currently;
+                  if (evaluation[j].latitude === row.latitude &&
+                    evaluation[j].longitude === row.longitude) {
+                    evaluation[j].outdoor = row.currently;
                   }
                 }
 
@@ -130,15 +130,14 @@ router.post('/', function (req, res) {
                 for (var k = 0; k < evaluation.length; k++) {
                   // if the device ID matches, add the reading
                   // to the recommendation object
-                  if (evaluation[k].id ===
-                    row.data.config.url.substr(35, 24)) {
+                  if (evaluation[k].id === row.body.coreInfo.deviceID) {
                     // character at position 60 is either a 'c' or an 'r'
                     // c is a temp reading, r is humidity.  Store accordingly.
-                    if (row.data.config.url.substr(60, 1) === 'c') {
+                    if (row.body.name.substr(0, 1) === 'c') {
                       console.log('Storing celsius data');
-                      evaluation[k].indoor.celsius = row.data.result;
+                      evaluation[k].indoor.celsius = row.body.result;
                     } else {
-                      evaluation[k].indoor.rh = row.data.result;
+                      evaluation[k].indoor.rh = row.body.result;
                       console.log('Storing humidity data');
                     }
                   }
