@@ -93,6 +93,8 @@ router.post('/', function (req, res) {
         if (result !== undefined) {
           result.rows.forEach(function (row, i) {
             if (i % 2 === 0) {
+              // add indoor object to new evaluation object
+              row.indoor = {};
               evaluation.push(row);
             }
           });
@@ -135,9 +137,9 @@ router.post('/', function (req, res) {
                     // c is a temp reading, r is humidity.  Store accordingly.
                     if (row.body.name.substr(0, 1) === 'c') {
                       console.log('Storing celsius data');
-                      evaluation[k].indoor = { celsius: row.body.result };
+                      evaluation[k].indoor.celsius = row.body.result;
                     } else {
-                      evaluation[k].indoor = { rh: row.body.result };
+                      evaluation[k].indoor.rh = row.body.result;
                       console.log('Storing humidity data');
                     }
                   }
