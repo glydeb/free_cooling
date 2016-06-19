@@ -103,11 +103,11 @@ router.post('/', function (req, res) {
 
           setpoint.wetLimit = calc.absoluteHumidity(setpoint.highLimit, 60);
           setpoint.dryLimit = calc.absoluteHumidity(setpoint.lowLimit, 35);
-          console.log('Evaluation array', evaluation);
           Promise.all(apiPromises).then(function (results) {
             // parse returns of API calls
             results.forEach(function (row, i) {
               console.log('Entered results process loop, index: ', i);
+              console.log('result to process: ', row.data);
               // if there's a currently key, it's a forecast.io return
               if (row.data.currently !== undefined) {
                 console.log('Processing forecast return');
@@ -138,13 +138,9 @@ router.post('/', function (req, res) {
                       evaluation[k].indoor.rh = row.data.result;
                       console.log('Storing humidity data');
                     }
-
-                    // can only be one match
-                    break;
                   }
                 }
               }
-
             });
 
             // add absolute humidity to evaluation objects
