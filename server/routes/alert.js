@@ -3,6 +3,7 @@ var router = express.Router();
 var pg = require('pg');
 var Particle = require('particle-api-js');
 var particle = new Particle();
+var rp = require('request-promise');
 var moment = require('moment');
 var recommend = require('../public/scripts/recommend');
 var calc = require('../public/scripts/calc');
@@ -186,7 +187,7 @@ router.post('/', function (req, res) {
                 console.log('Alert string created:', alertString);
 
                 // create alert if it doesn't exist, otherwise append to it.
-                if (alertQueue.hasOwnProperty(element.phone_number)) {
+                if (existAlert) {
                   alertQueue[element.phone_number].replace(/\.$/,
                     alertString);
                 } else {
@@ -215,6 +216,7 @@ function sendAlerts(queue) {
   var request = '';
   var options = { method: 'POST' };
   for (var phone in queue) {
+    console.log('sending to: ', phone);
     request = 'http://textbelt.com/text?number=';
     request += phone + '&message=' + queue[phone];
     options.uri = request;
@@ -241,7 +243,7 @@ function makeAlertString(alertIntro, newRec, existAlert, nickname) {
   }
   console.log('action text determined');
 
-  alertString += 'the windows near "';
+  alertString += ' the windows near "';
   alertString += nickname + '".';
   console.log('alert text finalized');
   return alertString;
