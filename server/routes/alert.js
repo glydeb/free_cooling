@@ -3,7 +3,7 @@ var router = express.Router();
 var pg = require('pg');
 var Particle = require('particle-api-js');
 var particle = new Particle();
-var rp = require('request-promise');
+var request = require('request');
 var moment = require('moment');
 var recommend = require('../public/scripts/recommend');
 var calc = require('../public/scripts/calc');
@@ -213,19 +213,22 @@ router.post('/', function (req, res) {
 
 function sendAlerts(queue) {
   console.log('sendAlerts');
-  var request = '';
-  var options = { method: 'POST' };
+  var options = {};
   for (var phone in queue) {
     console.log('sending to: ', phone);
-    options.uri = 'http://textbelt.com/text';
     options.form = {
       number: phone,
       message: queue[phone]
     };
     console.log(options);
-    rp(options).then(
-      console.log('alert sent to ' + phone)
-    ).catch(console.log('Send failed'));
+    request.post('http://textbelt.com/text', options, function (err, res) {
+      if (err) {
+        console.log('Send failed', err);
+      } else {
+        console.log('alert sent to ' + phone);
+        console.log('response from server:', res);
+      }
+    });
   }
 }
 
@@ -246,8 +249,8 @@ function makeAlertString(alertIntro, newRec, existAlert, nickname) {
   }
   console.log('action text determined');
 
-  alertString += ' the windows near "';
-  alertString += nickname + '".';
+  alertString += ' the windows near ';
+  alertString += nickname + '.';
   console.log('alert text finalized');
   return alertString;
 }
