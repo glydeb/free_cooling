@@ -119,10 +119,12 @@ router.post('/', function (req, res) {
                 // loop through the recommendations and pair up the forecasts
                 for (var j = 0; j < evaluation.length; j++) {
                   // if the lat & long matches, add the forecast object
-                  // to the recommendation object
+                  // to the recommendation object and add a celsius property
                   if (evaluation[j].latitude == row.latitude &&
                     evaluation[j].longitude == row.longitude) {
                     evaluation[j].outdoor = row.currently;
+                    evaluation[j].outdoor.celsius = (row.currently.temperature -
+                      32) * 5 / 9;
                   }
                 }
 
