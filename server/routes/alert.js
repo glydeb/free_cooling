@@ -223,9 +223,9 @@ function sendAlerts(queue) {
 function makeAlertString(alertIntro, newRec, phone) {
   console.log('makeAlertString function entered');
   var alertString = '';
-  console.log('Test expression:', alertQueue.hasOwnProperty(phone));
   console.log('Object:', alertQueue);
   console.log('phone parameter:', phone);
+  console.log('Test expression:', alertQueue.hasOwnProperty(phone));
   if (alertQueue.hasOwnProperty(phone)) {
     alertString = ' and ';
   } else {
