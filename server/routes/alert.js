@@ -217,13 +217,15 @@ function sendAlerts(queue) {
   var options = { method: 'POST' };
   for (var phone in queue) {
     console.log('sending to: ', phone);
-    request = 'http://textbelt.com/text?number=';
-    request += phone + '&message=' + encodeURI(queue[phone]);
-    options.uri = request;
+    options.uri = 'http://textbelt.com/text';
+    options.qs = {
+      number: phone,
+      message: queue[phone]
+    };
     console.log(options);
     rp(options).then(
       console.log('alert sent to ' + phone)
-    ).catch(console.log(error));
+    ).catch(console.log('Send failed'));
   }
 }
 
