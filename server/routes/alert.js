@@ -155,11 +155,11 @@ router.post('/', function (req, res) {
             evaluation.forEach(function (element, i) {
               console.log('Start of evaluation forEach loop, iteration: ', i);
               evaluation[i].outdoor.absHumidity =
-                calc.ababsoluteHumidity(element.outdoor.celsius,
+                calc.absoluteHumidity(element.outdoor.celsius,
                 element.outdoor.humidity * 100);
               console.log('Outdoor absoluteHumidity calculated');
               evaluation[i].indoor.absHumidity =
-                calc.ababsoluteHumidity(element.indoor.celsius,
+                calc.absoluteHumidity(element.indoor.celsius,
                 element.indoor.rh);
               console.log('Indoor absoluteHumidity calculated');
 
