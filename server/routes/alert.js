@@ -218,7 +218,7 @@ function sendAlerts(queue) {
   for (var phone in queue) {
     console.log('sending to: ', phone);
     options.uri = 'http://textbelt.com/text';
-    options.qs = {
+    options.headers = {
       number: phone,
       message: queue[phone]
     };
