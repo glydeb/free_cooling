@@ -147,6 +147,7 @@ router.post('/', function (req, res) {
 
             // add absolute humidity to evaluation objects
             console.log('calculating absolute humidity');
+            console.log(evaluation);
             evaluation.forEach(function (element, i) {
               console.log('Start of evaluation forEach loop, iteration: ', i);
               evaluation[i].outdoor.absHumidity =
@@ -160,6 +161,8 @@ router.post('/', function (req, res) {
               // recommendation, and push to alert queue if different
               var newRecommend = recommend.algorithm(element.indoor,
                 element.outdoor, setpoint);
+              console.log('newRecommend:', newRecommend );
+              console.log('element.last_recommended');
               if (newRecommend !== element.last_recommended) {
                 console.log('change in recommendation found');
                 evaluation[i].last_recommended = newRecommend;
