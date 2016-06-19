@@ -157,9 +157,11 @@ router.post('/', function (req, res) {
               evaluation[i].outdoor.absHumidity =
                 calc.ababsoluteHumidity(element.outdoor.celsius,
                 element.outdoor.humidity * 100);
+              console.log('Outdoor absoluteHumidity calculated');
               evaluation[i].indoor.absHumidity =
                 calc.ababsoluteHumidity(element.indoor.celsius,
                 element.indoor.rh);
+              console.log('Indoor absoluteHumidity calculated');
 
               // get recommendation for each evaluation and compare to last
               // recommendation, and push to alert queue if different
