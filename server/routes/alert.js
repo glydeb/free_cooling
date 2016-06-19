@@ -236,7 +236,7 @@ function queryPhoton(photonVariable, photonID, accessToken) {
   query += '/' + photonVariable + '?access_token=';
   query += accessToken;
 
-  var apiCall = { uri: baseURL + encodeURI(query) };
+  var apiCall = baseURL + encodeURI(query);
 
   // Request temperature from device
   return rp(apiCall);
