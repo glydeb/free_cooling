@@ -76,6 +76,9 @@ table {
   margin-bottom: 20px;
 }
 
+.row {
+  margin-bottom: 20px;
+}
 .row p {
   font-size: 18px;
 }
