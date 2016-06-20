@@ -5,7 +5,7 @@ myApp.controller('SetupController', ['$scope', '$http', '$location', 'DataFactor
   $scope.setup = {};
   $scope.location = {};
 
-  if ($location().search.device !== undefined) {
+  if ($location.search().device !== undefined) {
     if ($location.search().device.length === 24) {
       // attempt to retrieve device data
       $http.get('/settings/' + $location.search().device).then(function (res, err)
