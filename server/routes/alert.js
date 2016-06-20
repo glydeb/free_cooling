@@ -220,16 +220,18 @@ router.post('/', function (req, res) {
               console.log('send alerts called');
               sendAlerts(alertQueue);
             }
+
+            // zero out evaluation & apiPromises arrays for next run through
+            evaluation = [];
+            console.log('evaluation array cleared');
+            apiPromises = [];
+            console.log('apiPromises array cleared');
+
           });
-          // zero out evaluation array for next run through
-          evaluation = [];
-          console.log('evaluation array cleared');
 
         }
       }
     );
-    apiPromises = [];
-    console.log('apiPromises array cleared');
     res.sendStatus(200);
   });
 });
