@@ -14,21 +14,22 @@ myApp.controller('SetupController', ['$scope', '$http', '$location', 'DataFactor
       if (err) {
         console.log('uh-oh: ', err);
       }
-      /*
-      $scope.setup.email = '2a0035001247343431373336';
-      $scope.setup.photonID = '2a0035001247343431373336';
-      $scope.setup.accessToken = 'b755de087c92b9d21ea7e0bd10a58af2bf326e45';
-      $scope.setup.nickname = '2a0035001247343431373336';
-      $scope.location.street = '9401 James Ave. S.';
-      $scope.location.city = 'Bloomington';
-      $scope.location.state = 'MN';
-      $scope.location.zip = '55431';
-      $scope.phone = '55431';
-      $scope.enableAlert = '55431';
-      $scope.startBlock = '55431';
-      $scope.endBlock = '55431';
+
+      var settings = res.data[0];
+      $scope.setup.email = settings.email;
+      $scope.setup.photonID = settings.deviceid;
+      $scope.setup.accessToken = settings.access_token;
+      $scope.setup.nickname = settings.nickname;
+      $scope.location.street = settings.street_address;
+      $scope.location.city = settings.city;
+      $scope.location.state = settings.state;
+      $scope.location.zip = settings.zip;
+      $scope.phone = settings.phone_number;
+      $scope.enableAlert = settings.allow_alerts;
+      $scope.startBlock = parseInt(settings.start_time.substr(0,2));
+      $scope.endBlock = parseInt(settings.end_time.substr(0,2));
       $scope.stored = true;
-      */
+
     });
   }
 
