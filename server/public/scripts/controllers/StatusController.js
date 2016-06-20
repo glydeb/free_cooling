@@ -37,9 +37,11 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
           location.longitude = response.data[0].longitude;
 
           // separate date & time for table display
-          $scope.history.forEach(function (row, i) {
-            $scope.history[i].date = $scope.history[i].date_time.substr(0, 10);
-            $scope.history[i].time = $scope.history[i].date_time.substr(11, 10);
+           $scope.history.forEach(function (row, i) {
+            if($scope.history[i].date_time !== null)  {
+              $scope.history[i].date = $scope.history[i].date_time.substr(0, 10);
+              $scope.history[i].time = $scope.history[i].date_time.substr(11, 10);
+            }
           });
 
           // Gather all data for page - indoor & outdoor conditions & forecast
