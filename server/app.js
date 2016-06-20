@@ -6,6 +6,7 @@ var request = require('request');
 
 // modules
 var index = require('./routes/index');
+var settings = require('./routes/settings');
 var alert = require('./routes/alert');
 var setup = require('./routes/setup');
 var location = require('./routes/location');
@@ -23,6 +24,7 @@ app.use(bodyParser.json());
 // express routes
 app.use('/store', setup);
 app.use('/data', data);
+app.use('/settings', settings);
 app.use('/location', location);
 app.use('/alert', alert);
 app.use('/reminder', reminder);

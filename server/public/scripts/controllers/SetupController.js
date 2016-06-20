@@ -5,13 +5,32 @@ myApp.controller('SetupController', ['$scope', '$http', '$location', 'DataFactor
   $scope.setup = {};
   $scope.location = {};
 
-  // preload Sparky's info & default location
-  $scope.setup.photonID = '2a0035001247343431373336';
-  $scope.setup.accessToken = 'b755de087c92b9d21ea7e0bd10a58af2bf326e45';
-  $scope.location.street = '9401 James Ave. S.';
-  $scope.location.city = 'Bloomington';
-  $scope.location.state = 'MN';
-  $scope.location.zip = '55431';
+  if ($location.search().device.length === 24) {
+    // attempt to retrieve device data
+    $http.get('/settings/' + $location.search().device).then(function (res, err)
+      {
+
+      console.log('response: ', res);
+      if (err) {
+        console.log('uh-oh: ', err);
+      }
+      /*
+      $scope.setup.email = '2a0035001247343431373336';
+      $scope.setup.photonID = '2a0035001247343431373336';
+      $scope.setup.accessToken = 'b755de087c92b9d21ea7e0bd10a58af2bf326e45';
+      $scope.setup.nickname = '2a0035001247343431373336';
+      $scope.location.street = '9401 James Ave. S.';
+      $scope.location.city = 'Bloomington';
+      $scope.location.state = 'MN';
+      $scope.location.zip = '55431';
+      $scope.phone = '55431';
+      $scope.enableAlert = '55431';
+      $scope.startBlock = '55431';
+      $scope.endBlock = '55431';
+      $scope.stored = true;
+      */
+    });
+  }
 
   $scope.submitAndTest = function () {
 
@@ -28,26 +47,6 @@ myApp.controller('SetupController', ['$scope', '$http', '$location', 'DataFactor
 
   };
 
-/*  $scope.faves = [];
-
-  if ($scope.dataFactory.factoryGetFaves() === undefined) {
-    $scope.dataFactory.factoryRefreshFaveData().then(function () {
-      $scope.faves = $scope.dataFactory.factoryGetFaves();
-    });
-  } else {
-    $scope.faves = $scope.dataFactory.factoryGetFaves();
-  }
-
-  $scope.deleteFav = function (id) {
-    $http.delete('/pets/' + id)
-      .then(function (response) {
-        console.log('DELETE /pets ', id);
-        $scope.dataFactory.factoryRefreshFaveData().then(function () {
-          $scope.faves = $scope.dataFactory.factoryGetFaves();
-        });
-      });
-  };
-*/
 
   function sendEmail() {
     $scope.linkSent = true;

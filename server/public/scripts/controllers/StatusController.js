@@ -28,6 +28,7 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
         console.log(response);
         if (response.status == 200) {
           // if a good response, populate history table & model
+          $scope.hash = $location.search().device;
           $scope.history = response.data;
           accessToken = response.data[0].access_token;
           photonID = response.data[0].deviceid;

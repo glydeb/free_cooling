@@ -52,6 +52,10 @@ form span {
 }
 
 h2 button {
+  padding-left: 20px;
+}
+
+h2 button {
   float: right;
   font-size: 18px;
   font-weight: normal;
@@ -70,4 +74,8 @@ th {
 
 table {
   margin-bottom: 20px;
+}
+
+.row p {
+  font-size: 18px;
 }
