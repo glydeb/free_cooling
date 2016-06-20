@@ -21,6 +21,7 @@ router.get('/:hash', function (req, res) {
       function (err, result) {
         done();
         if (err) {
+          console.log(err);
           res.sendStatus(500);
           return;
         }
