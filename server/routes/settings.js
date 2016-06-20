@@ -16,7 +16,7 @@ router.get('/:hash', function (req, res) {
       ' LEFT OUTER JOIN phones on devices.phone_number =' +
       ' phones.phone_number' +
       ' JOIN locations on devices.location_id = locations.id' +
-      ' WHERE devices.hash = $1' +
+      ' WHERE devices.hash = $1',
       [hash],
       function (err, result) {
         done();
