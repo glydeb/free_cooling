@@ -5,32 +5,34 @@ myApp.controller('SetupController', ['$scope', '$http', '$location', 'DataFactor
   $scope.setup = {};
   $scope.location = {};
 
-  if ($location.search().device.length === 24) {
-    // attempt to retrieve device data
-    $http.get('/settings/' + $location.search().device).then(function (res, err)
-      {
+  if ($location().search.device !== undefined) {
+    if ($location.search().device.length === 24) {
+      // attempt to retrieve device data
+      $http.get('/settings/' + $location.search().device).then(function (res, err)
+        {
 
-      console.log('response: ', res);
-      if (err) {
-        console.log('uh-oh: ', err);
-      }
+        console.log('response: ', res);
+        if (err) {
+          console.log('uh-oh: ', err);
+        }
 
-      var settings = res.data[0];
-      $scope.setup.email = settings.email;
-      $scope.setup.photonID = settings.deviceid;
-      $scope.setup.accessToken = settings.access_token;
-      $scope.setup.nickname = settings.nickname;
-      $scope.location.street = settings.street_address;
-      $scope.location.city = settings.city;
-      $scope.location.state = settings.state;
-      $scope.location.zip = settings.zip;
-      $scope.phone = settings.phone_number;
-      $scope.enableAlert = settings.allow_alerts;
-      $scope.startBlock = parseInt(settings.start_time.substr(0,2));
-      $scope.endBlock = parseInt(settings.end_time.substr(0,2));
-      $scope.stored = true;
+        var settings = res.data[0];
+        $scope.setup.email = settings.email;
+        $scope.setup.photonID = settings.deviceid;
+        $scope.setup.accessToken = settings.access_token;
+        $scope.setup.nickname = settings.nickname;
+        $scope.location.street = settings.street_address;
+        $scope.location.city = settings.city;
+        $scope.location.state = settings.state;
+        $scope.location.zip = settings.zip;
+        $scope.phone = settings.phone_number;
+        $scope.enableAlert = settings.allow_alerts;
+        $scope.startBlock = parseInt(settings.start_time.substr(0,2));
+        $scope.endBlock = parseInt(settings.end_time.substr(0,2));
+        $scope.stored = true;
 
-    });
+      });
+    }
   }
 
   $scope.submitAndTest = function () {
