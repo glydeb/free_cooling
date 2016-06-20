@@ -169,12 +169,30 @@ router.post('/', function (req, res) {
                 element.indoor.rh);
               console.log('Indoor absoluteHumidity calculated');
 
-              // get recommendation for each evaluation and compare to last
-              // recommendation, and push to alert queue if different
+              // get recommendation for each evaluation and store in database
               var newRecommend = recommend.algorithm(element.indoor,
                 element.outdoor, setpoint);
+              // create indoor farenheit property to store in database
+              element.indoor.farenheit = (element.indoor.celsius * 1.8) + 32;
               console.log('newRecommend:', newRecommend);
-              console.log('element.recommend', element.recommend);
+              client.query('INSERT INTO conditions (date_time, indoor_temp,' +
+                ' indoor_rh, outdoor_temp, outdoor_rh, precip, recommend,' +
+                ' device_id)' +
+                ' VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+                [new Date(), element.indoor.farenheit, element.indoor.rh,
+                element.outdoor.temperature, element.outdoor.humidity * 100,
+                element.outdoor.precipProbability, newRecommend.recommendation, element.id],
+                function (err, result) {
+                  done();
+                  if (err) {
+                    console.log(err);
+                    return;
+                  }
+                }
+              );
+
+              // compare to last recommendation, and push to alert queue
+              // if different
               if (newRecommend.recommendation !== element.recommend) {
                 console.log('change in recommendation found');
                 alertsFound = true;
@@ -206,8 +224,6 @@ router.post('/', function (req, res) {
         }
       }
     );
-    console.log('end of post reached');
-    res.sendStatus(200);
   });
 });
 
@@ -226,7 +242,6 @@ function sendAlerts(queue) {
         console.log('Send failed', err);
       } else {
         console.log('alert sent to ' + phone);
-        console.log('response from server:', res);
       }
     });
   }
