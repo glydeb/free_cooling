@@ -230,6 +230,7 @@ router.post('/', function (req, res) {
     );
     apiPromises = [];
     console.log('apiPromises array cleared');
+    res.sendStatus(200);
   });
 });
 
