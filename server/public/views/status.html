@@ -36,8 +36,8 @@
   </div>
   <h2>Recommendation: Windows {{recommendation.recommendation}} ({{recommendation.reason}})</h2>
   <table>
-    <tr>Previous Readings for this location:</tr>
-    <tr><th>Date</th><th>Time</th><th>Indoor Temp</th><th>Indoor RH</th><th>Outdoor Temp</th><th>Outdoor RH</th><th>Rain %</th><th>Recommendation</th></tr>
+    <tr><th>Previous Readings for this location:</th></tr>
+    <tr><th>Date</th><th>Time (UTC)</th><th>Indoor Temp</th><th>Indoor RH</th><th>Outdoor Temp</th><th>Outdoor RH</th><th>Rain %</th><th>Recommendation</th></tr>
     <tr ng-repeat="record in history">
       <td>{{record.date}}</td><td>{{record.time}}</td><td>{{record.indoor_temp}}</td><td>{{record.indoor_rh}}</td><td>{{record.outdoor_temp}}</td><td>{{record.outdoor_rh}}</td><td>{{record.precip}}</td><td>{{record.recommend}}</td>
     </tr>

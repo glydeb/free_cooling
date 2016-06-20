@@ -86,8 +86,8 @@ router.post('/', function (req, res) {
       ' devices.phone_number, start_time, end_time, nickname' +
       ' ORDER BY devices.id, last_recommended DESC',
       function (err, result) {
-        done();
         if (err) {
+          done();
           console.log(err);
           return;
         }
@@ -183,8 +183,8 @@ router.post('/', function (req, res) {
                 element.outdoor.temperature, element.outdoor.humidity * 100,
                 element.outdoor.precipProbability, newRecommend.recommendation, element.id],
                 function (err, result) {
-                  done();
                   if (err) {
+                    done();
                     console.log(err);
                     return;
                   }
@@ -214,16 +214,22 @@ router.post('/', function (req, res) {
               }
 
             });
+            done();
 
             if (alertsFound) {
               console.log('send alerts called');
               sendAlerts(alertQueue);
             }
           });
+          // zero out evaluation array for next run through
+          evaluation = [];
+          console.log('evaluation array cleared');
 
         }
       }
     );
+    apiPromises = [];
+    console.log('apiPromises array cleared');
   });
 });
 
