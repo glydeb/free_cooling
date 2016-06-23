@@ -182,7 +182,7 @@ router.post('/', function (req, res) {
                 ' device_id)' +
                 ' VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
                 [new Date(), element.indoor.farenheit, element.indoor.rh,
-                element.outdoor.temperature, element.outdoor.humidity),
+                element.outdoor.temperature, element.outdoor.humidity,
                 element.outdoor.precipProbability, newRecommend.recommendation, element.id],
                 function (err, result) {
                   if (err) {
