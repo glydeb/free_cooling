@@ -125,6 +125,8 @@ router.post('/', function (req, res) {
                   if (evaluation[j].latitude == row.latitude &&
                     evaluation[j].longitude == row.longitude) {
                     evaluation[j].outdoor = row.currently;
+                    evaluation[j].outdoor.humidity =
+                      Math.round(evaluation[j].outdoor.humidity);
                     evaluation[j].outdoor.celsius = (row.currently.temperature -
                       32) * 5 / 9;
                   }
@@ -162,7 +164,7 @@ router.post('/', function (req, res) {
               console.log('Start of evaluation forEach loop, iteration: ', i);
               evaluation[i].outdoor.absHumidity =
                 calc.absoluteHumidity(element.outdoor.celsius,
-                element.outdoor.humidity * 100);
+                element.outdoor.humidity);
               console.log('Outdoor absoluteHumidity calculated');
               evaluation[i].indoor.absHumidity =
                 calc.absoluteHumidity(element.indoor.celsius,
@@ -180,7 +182,7 @@ router.post('/', function (req, res) {
                 ' device_id)' +
                 ' VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
                 [new Date(), element.indoor.farenheit, element.indoor.rh,
-                element.outdoor.temperature, element.outdoor.humidity * 100,
+                element.outdoor.temperature, element.outdoor.humidity),
                 element.outdoor.precipProbability, newRecommend.recommendation, element.id],
                 function (err, result) {
                   if (err) {

@@ -55,6 +55,7 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
             $scope.indoor.celsius = response[0].data.result;
             $scope.indoor.rh = response[1].data.result;
             $scope.outdoor = response[2].data.currently;
+            $scope.outdoor.humidity = Math.round($scope.outdoor.humidity);
             console.log(response[0]);
             console.log(response[2].data);
             processApiReturns();
@@ -90,14 +91,13 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
     currentConditions.indoorTemp = $scope.indoor.farenheit;
     currentConditions.indoorRH = $scope.indoor.rh;
     currentConditions.outdoorTemp = $scope.outdoor.temperature;
-    currentConditions.outdoorRH = $scope.outdoor.humidity * 100;
+    currentConditions.outdoorRH = $scope.outdoor.humidity;
     currentConditions.precip = $scope.outdoor.precipProbability;
     currentConditions.deviceID = photonID;
 
     // Get outdoor conditions for comparison and indoor absolute humidity
     $scope.outdoor.celsius = ($scope.outdoor.temperature - 32) * 5 / 9;
-    $scope.outdoor.absHumidity = calc.absoluteHumidity($scope.outdoor.celsius,
-      $scope.outdoor.humidity * 100);
+    $scope.outdoor.absHumidity = calc.absoluteHumidity($scope.outdoor.celsius, $scope.outdoor.humidity);
     $scope.indoor.absHumidity = calc.absoluteHumidity($scope.indoor.celsius,
       $scope.indoor.rh);
   }
