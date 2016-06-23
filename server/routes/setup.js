@@ -6,10 +6,11 @@ var pg = require('pg');
 var connectionString = 'postgres://localhost:5432/free_cooling';
 var sendgrid  = require('sendgrid')(process.env.SENDGRID_KEY);
 var usedHash = [];
+var signUpText = 'Thank you for signing up with Free Cooling. Click the following link to visit the main site:\n\n';
 var invitation   = {
   from: process.env.FROM_EMAIL,
   subject: 'Welcome to Free Cooling!',
-  text: 'Thank you for signing up with Free Cooling. Click the following link to visit the main site:\n\n'
+  text: signUpText
 };
 
 pg.connect(process.env.DATABASE_URL || connectionString, function (err, client, done) {
@@ -101,6 +102,9 @@ function devicesInsert(client, done, locationID, setup, res) {
         if (err) { console.error(err); }
         console.log(json);
       });
+
+      // reset invitation text to original to be ready for next setup.
+      invitation.text = signUpText;
 
       res.sendStatus(201);
     });
