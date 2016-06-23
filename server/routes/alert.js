@@ -126,7 +126,7 @@ router.post('/', function (req, res) {
                     evaluation[j].longitude == row.longitude) {
                     evaluation[j].outdoor = row.currently;
                     evaluation[j].outdoor.humidity =
-                      Math.round(evaluation[j].outdoor.humidity);
+                      Math.round(evaluation[j].outdoor.humidity * 100);
                     evaluation[j].outdoor.celsius = (row.currently.temperature -
                       32) * 5 / 9;
                   }

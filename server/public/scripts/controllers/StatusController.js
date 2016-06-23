@@ -55,7 +55,7 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
             $scope.indoor.celsius = response[0].data.result;
             $scope.indoor.rh = response[1].data.result;
             $scope.outdoor = response[2].data.currently;
-            $scope.outdoor.humidity = Math.round($scope.outdoor.humidity);
+            $scope.outdoor.humidity = Math.round($scope.outdoor.humidity * 100);
             console.log(response[0]);
             console.log(response[2].data);
             processApiReturns();
