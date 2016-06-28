@@ -13,11 +13,13 @@ var invitation   = {
   text: signUpText
 };
 
-pg.connect(process.env.DATABASE_URL || connectionString, function (err, client, done) {
+pg.connect(process.env.DATABASE_URL, function (err, client, done) {
+  console.log(err);
   client.query('SELECT hash from devices',
     function (err, result) {
       done();
       if (err) {
+        console.log(err);
         return;
       }
 

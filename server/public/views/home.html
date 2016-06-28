@@ -46,9 +46,9 @@
         <fieldset>
           <legend>Alert Information:</legend>
           <label for="phone">Phone:</label>
-          <input type="text" name="address" maxlength="200" ng-model="phone" />
+          <input type="text" name="phone" maxlength="15" ng-model="phone" />
           <label for="enableAlert">Enable Alerts</label>
-          <input type="checkbox" ng-model="enableAlert"/>
+          <input type="checkbox" name="enableAlert" ng-model="enableAlert"/>
           <label for="blockAlertsStart" ng-show="enableAlert">Block alerts between</label>
           <select name="blockAlertsStart"  ng-show="enableAlert" ng-model="startBlock" ng-options="hour.hour as
             hour.label for hour in fullDay"></select>

@@ -94,7 +94,11 @@ router.post('/', function (req, res) {
 
         if (result !== undefined) {
           result.rows.forEach(function (row, i) {
-            if (i % 2 === 0) {
+            if (i === 0) {
+              // add indoor object to new evaluation object
+              row.indoor = {};
+              evaluation.push(row);
+            } else if (row.id !== result.rows[(i - 1)].id) {
               // add indoor object to new evaluation object
               row.indoor = {};
               evaluation.push(row);
