@@ -98,10 +98,13 @@ router.post('/', function (req, res) {
               // add indoor object to new evaluation object
               row.indoor = {};
               evaluation.push(row);
-            } else if (row.id !== result.rows[(i - 1)].id) {
-              // add indoor object to new evaluation object
-              row.indoor = {};
-              evaluation.push(row);
+            } else {
+              var last = i - 1;
+              if (row.id !== result.rows[last].id) {
+                // add indoor object to new evaluation object
+                row.indoor = {};
+                evaluation.push(row);
+              }
             }
           });
 
