@@ -40,7 +40,6 @@ router.post('/', function (req, res) {
         if (result !== undefined) {
           result.rows.forEach(function (row, i, array) {
             apiPromises.push(forecast.fetch(row.latitude, row.longitude));
-            // console.log('forecast queried', apiPromises);
           });
 
           forecastCalls = result.rows;
@@ -88,7 +87,6 @@ router.post('/', function (req, res) {
       function (err, result) {
         if (err) {
           done();
-          console.log(err);
           return;
         }
 
@@ -116,12 +114,10 @@ router.post('/', function (req, res) {
           setpoint.wetLimit = calc.absoluteHumidity(setpoint.highLimit, 60);
           setpoint.dryLimit = calc.absoluteHumidity(setpoint.lowLimit, 35);
           Promise.all(apiPromises).then(function (results) {
-            console.log('begin apiPromises: ', results);
 
             // parse returns of API calls
             results.forEach(function (row, i) {
               console.log('Entered results process loop, index: ', i);
-              console.log('result to process: ', row);
               // if there's a currently key, it's a forecast.io return
               if (row.currently !== undefined) {
                 console.log('Processing forecast return');
@@ -162,7 +158,6 @@ router.post('/', function (req, res) {
 
             // add absolute humidity to evaluation objects
             console.log('calculating absolute humidity');
-            console.log(evaluation);
             var alertQueue = {};
             var alertString = '';
             var existAlert = false;
@@ -194,7 +189,6 @@ router.post('/', function (req, res) {
                 function (err, result) {
                   if (err) {
                     done();
-                    console.log(err);
                     return;
                   }
                 }
@@ -206,7 +200,6 @@ router.post('/', function (req, res) {
                 console.log('change in recommendation found');
                 alertsFound = true;
                 evaluation[i].recommend = newRecommend.recommendation;
-                console.log('new recommendation stored in object');
                 existAlert = alertQueue.hasOwnProperty(element.phone_number);
                 alertString = makeAlertString(alertIntro,
                   newRecommend.recommendation, existAlert,
@@ -246,7 +239,6 @@ router.post('/', function (req, res) {
 });
 
 function sendAlerts(queue) {
-  console.log('sendAlerts');
   var options = {};
   for (var phone in queue) {
     console.log('sending to: ', phone);
@@ -267,31 +259,21 @@ function sendAlerts(queue) {
 
 function makeAlertString(alertIntro, newRec, existAlert, nickname) {
   var alertString = '';
-  console.log('Enter makeAlertString function');
   if (existAlert) {
     alertString = ' and ';
   } else {
     alertString = alertIntro;
   }
-  console.log('If alert to phone exists logic passed');
 
   if (newRec === 'Open') {
     alertString += 'opening';
   } else {
     alertString += 'closing';
   }
-  console.log('action text determined');
 
   alertString += ' the windows near ';
   alertString += nickname + '.';
-  console.log('alert text finalized');
   return alertString;
-}
-
-function createAlertQueue() {
-  // get absolute humidity for indoor/outdoor/setpoints
-  // create objects to feed to recommend function
-  console.log('createAlertQueue');
 }
 
 function queryPhoton(photonVariable, photonID, accessToken) {
