@@ -1,7 +1,7 @@
 {
   "name": "free_cooling",
   "version": "1.0.0",
-  "description": "A full-stack application to aid taking advantage for times when opening windows will make an indoor space more comfortable.",
+  "description": "A full-stack application to aid taking advantage of times when opening windows will make an indoor space more comfortable.",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
