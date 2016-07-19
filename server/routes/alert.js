@@ -42,7 +42,7 @@ router.post('/', function (req, res) {
 
         // if there are results from the query, make api calls to forecast.io
         // and store the promises in the promise array
-        if (result !== undefined) {
+        if (result.rowCount > 0) {
           result.rows.forEach(function (row) {
             apiPromises.push(forecast.fetch(row.latitude, row.longitude));
           });
@@ -65,7 +65,7 @@ router.post('/', function (req, res) {
 
         // if there are devices found, make api calls to particle api and
         // store promises in the promises array
-        if (result !== undefined) {
+        if (result.rowCount > 0) {
           result.rows.forEach(function (row) {
             apiPromises.push(queryPhoton('celsius', row.id, row.access_token));
             apiPromises.push(queryPhoton('humidity', row.id, row.access_token));
@@ -93,7 +93,7 @@ router.post('/', function (req, res) {
 
         // decide which results from the query to evaluate
         // Based on which result is the latest recommendation
-        if (result !== undefined) {
+        if (result.rowCount > 0) {
           result.rows.forEach(function (row, i) {
 
             // The first record is always a latest recommendation
@@ -125,8 +125,8 @@ router.post('/', function (req, res) {
             // parse returns of API calls
             results.forEach(function (row, i) {
               console.log('Entered results process loop, index: ', i);
-              // if there's a currently key, it's a forecast.io return
-              if (row.currently !== undefined) {
+              // if there's a currently property, it's a forecast.io return
+              if (row.hasOwnProperty('currently')) {
                 console.log('Processing forecast return');
                 // loop through the recommendations and pair up the forecasts
                 for (var j = 0; j < evaluation.length; j++) {
