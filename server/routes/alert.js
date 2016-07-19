@@ -12,9 +12,10 @@ var forecast = new Forecast({
   key: process.env.FORECAST_KEY,
   timeout: 2500
 });
+
+// this variable stores the promises created by api calls so that the routine
+// will wait until all are satisfied before sending alerts
 var apiPromises = [];
-var forecastCalls = [];
-var photonCalls = [];
 var evaluation = [];
 var alertIntro = 'Free cooling recommends ';
 
@@ -25,6 +26,8 @@ router.post('/', function (req, res) {
       res.sendStatus(500);
     }
 
+    // Get a list of all locations that need a forecast
+    // Need to decide how local a forecast should be in terms of lat/long
     client.query('SELECT latitude, longitude FROM devices' +
       ' JOIN conditions ON devices.id = conditions.device_id' +
       ' JOIN locations ON devices.location_id = locations.id' +
@@ -37,16 +40,17 @@ router.post('/', function (req, res) {
           return;
         }
 
+        // if there are results from the query, make api calls to forecast.io
+        // and store the promises in the promise array
         if (result !== undefined) {
-          result.rows.forEach(function (row, i, array) {
+          result.rows.forEach(function (row) {
             apiPromises.push(forecast.fetch(row.latitude, row.longitude));
           });
-
-          forecastCalls = result.rows;
         }
       }
     );
 
+    // Get a list of all devices to query
     client.query('SELECT devices.id, access_token FROM devices' +
       ' JOIN conditions ON devices.id = conditions.device_id' +
       ' JOIN locations ON devices.location_id = locations.id' +
@@ -54,26 +58,23 @@ router.post('/', function (req, res) {
       ' WHERE allow_alerts = TRUE' +
       ' GROUP BY devices.id, access_token',
       function (err, result) {
-        // console.log('Photon query', result);
         if (err) {
           done();
           return;
         }
 
+        // if there are devices found, make api calls to particle api and
+        // store promises in the promises array
         if (result !== undefined) {
-          result.rows.forEach(function (row, i, array) {
+          result.rows.forEach(function (row) {
             apiPromises.push(queryPhoton('celsius', row.id, row.access_token));
-            // console.log('celsius queried', apiPromises);
             apiPromises.push(queryPhoton('humidity', row.id, row.access_token));
-            // console.log('rh queried', apiPromises);
           });
-
-          photonCalls = result.rows;
-          // console.log(result.rows);
         }
       }
     );
 
+    // Get all information necessary to formulate & send recommendations
     client.query('SELECT devices.id, MAX(date_time) as last_recommended,' +
       ' latitude, longitude, devices.phone_number, start_time, end_time,' +
       ' recommend, nickname FROM devices' +
@@ -90,22 +91,28 @@ router.post('/', function (req, res) {
           return;
         }
 
+        // decide which results from the query to evaluate
+        // Based on which result is the latest recommendation
         if (result !== undefined) {
           result.rows.forEach(function (row, i) {
+
+            // The first record is always a latest recommendation
             if (i === 0) {
-              // add indoor object to new evaluation object
               row.indoor = {};
               evaluation.push(row);
             } else {
+
+              // after that, a record is a latest recommendation only if
+              // it has a different id from the previous record.
               var last = i - 1;
               if (row.id !== result.rows[last].id) {
-                // add indoor object to new evaluation object
                 row.indoor = {};
                 evaluation.push(row);
               }
             }
           });
 
+          // hardcoded at present, make a variable in the future
           var setpoint = {
             highLimit: ((75.5 - 32) * 5 / 9),
             lowLimit: ((70.0 - 32) * 5 / 9)
