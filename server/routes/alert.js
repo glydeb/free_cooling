@@ -118,6 +118,7 @@ router.post('/', function (req, res) {
             lowLimit: ((70.0 - 32) * 5 / 9)
           };
 
+          // add humidity limits to the setpoint object
           setpoint.wetLimit = calc.absoluteHumidity(setpoint.highLimit, 60);
           setpoint.dryLimit = calc.absoluteHumidity(setpoint.lowLimit, 35);
           Promise.all(apiPromises).then(function (results) {
@@ -163,29 +164,27 @@ router.post('/', function (req, res) {
               }
             });
 
-            // add absolute humidity to evaluation objects
-            console.log('calculating absolute humidity');
+            // alert handling variables
             var alertQueue = {};
             var alertString = '';
             var existAlert = false;
             var alertsFound = false;
             evaluation.forEach(function (element, i) {
-              console.log('Start of evaluation forEach loop, iteration: ', i);
+              // add absolute humidity to evaluation objects
               evaluation[i].outdoor.absHumidity =
                 calc.absoluteHumidity(element.outdoor.celsius,
                 element.outdoor.humidity);
-              console.log('Outdoor absoluteHumidity calculated');
               evaluation[i].indoor.absHumidity =
                 calc.absoluteHumidity(element.indoor.celsius,
                 element.indoor.rh);
-              console.log('Indoor absoluteHumidity calculated');
 
-              // get recommendation for each evaluation and store in database
+              // get recommendation for each evaluation
               var newRecommend = recommend.algorithm(element.indoor,
                 element.outdoor, setpoint);
               // create indoor farenheit property to store in database
               element.indoor.farenheit = (element.indoor.celsius * 1.8) + 32;
-              console.log('newRecommend:', newRecommend);
+
+              // store conditions and recommendation in database
               client.query('INSERT INTO conditions (date_time, indoor_temp,' +
                 ' indoor_rh, outdoor_temp, outdoor_rh, precip, recommend,' +
                 ' device_id)' +
@@ -232,9 +231,8 @@ router.post('/', function (req, res) {
 
             // zero out evaluation & apiPromises arrays for next run through
             evaluation = [];
-            console.log('evaluation array cleared');
             apiPromises = [];
-            console.log('apiPromises array cleared');
+            console.log('evaluation and apiPromises arrays cleared');
 
           });
 
