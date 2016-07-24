@@ -52,9 +52,9 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
             getForecast()
           ]).then(function (response) {
 
-            $scope.indoor.celsius = response[0].data.result;
-            $scope.indoor.rh = response[1].data.result;
-            $scope.outdoor = response[2].data.currently;
+            $scope.indoor.celsius = roundToDecimals(response[0].data.result, 2);
+            $scope.indoor.rh = roundToDecimals(response[1].data.result, 1);
+            $scope.outdoor = roundToDecimals(response[2].data.currently, 2);
             $scope.outdoor.humidity = Math.round($scope.outdoor.humidity * 100);
             console.log(response[0]);
             console.log(response[2].data);
@@ -134,3 +134,11 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
   }
 
 }]);
+
+function roundToDecimals(num, decimals) {
+  var powerOfTen = 1;
+  for (var x = 0; x < decimals; x++) {
+    powerOfTen *= 10;
+  }
+  return Math.round(num * powerOfTen) / powerOfTen;
+}
