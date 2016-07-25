@@ -25,7 +25,6 @@ router.get('/:hash', function (req, res) {
           return;
         }
 
-        console.log(result);
         res.send(result.rows);
       }
     );
@@ -54,7 +53,6 @@ router.post('/', function (req, res) {
           return;
         }
 
-        console.log(result);
         res.sendStatus(201);
       }
     );
