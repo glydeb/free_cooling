@@ -138,8 +138,8 @@ router.post('/', function (req, res) {
                     evaluation[j].outdoor = row.currently;
                     evaluation[j].outdoor.humidity =
                       Math.round(evaluation[j].outdoor.humidity * 100);
-                    evaluation[j].outdoor.celsius = (row.currently.temperature -
-                      32) * 5 / 9;
+                    evaluation[j].outdoor.celsius =
+                      (row.currently.temperature - 32) * 5 / 9;
                   }
                 }
 
@@ -156,7 +156,8 @@ router.post('/', function (req, res) {
                       console.log('Storing celsius data');
                       evaluation[k].indoor.celsius = row.body.result;
                     } else {
-                      evaluation[k].indoor.rh = row.body.result;
+                      evaluation[k].indoor.rh = roundToDecimals(
+                        row.body.result, 1);
                       console.log('Storing humidity data');
                     }
                   }
@@ -182,7 +183,8 @@ router.post('/', function (req, res) {
               var newRecommend = recommend.algorithm(element.indoor,
                 element.outdoor, setpoint);
               // create indoor farenheit property to store in database
-              element.indoor.farenheit = (element.indoor.celsius * 1.8) + 32;
+              element.indoor.farenheit = roundToDecimals(
+                (element.indoor.celsius * 1.8) + 32, 1);
 
               // store conditions and recommendation in database
               client.query('INSERT INTO conditions (date_time, indoor_temp,' +
@@ -290,6 +292,14 @@ function queryPhoton(photonVariable, photonID, accessToken) {
   };
 
   return particle.getVariable(options);
+}
+
+function roundToDecimals(num, decimals) {
+  var powerOfTen = 1;
+  for (var x = 0; x < decimals; x++) {
+    powerOfTen *= 10;
+  }
+  return Math.round(num * powerOfTen) / powerOfTen;
 }
 
 module.exports = router;

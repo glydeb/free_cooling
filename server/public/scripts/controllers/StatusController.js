@@ -84,7 +84,7 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'Dat
   function processApiReturns() {
 
     // convert photon output for display
-    $scope.indoor.farenheit = (parseFloat($scope.indoor.celsius) * 1.8) + 32;
+    $scope.indoor.farenheit = roundToDecimals(($scope.indoor.celsius * 1.8) + 32, 1);
 
     //fill currentConditions object
     currentConditions.date = new Date();
