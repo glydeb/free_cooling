@@ -257,13 +257,16 @@ function sendAlerts(queue) {
       message: queue[phone]
     };
     console.log(options);
-    request.post('http://textbelt.com/text', options, function (err, res) {
-      if (err) {
-        console.log('Send failed', err);
-      } else {
-        console.log('alert sent to ' + phone);
-      }
-    });
+    request.post('http://textbelt.com/text', options,
+      textCallback(err, res, phone));
+  }
+}
+
+function textCallback (err, res, phone) {
+  if (err) {
+    console.log('Send failed', err);
+  } else {
+    console.log('alert sent to ' + phone);
   }
 }
 
