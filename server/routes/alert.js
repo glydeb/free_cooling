@@ -45,6 +45,7 @@ router.post('/', function (req, res) {
         if (result.rowCount > 0) {
           result.rows.forEach(function (row) {
             apiPromises.push(forecast.fetch(row.latitude, row.longitude));
+            console.log('forecast queried');
           });
         }
       }
@@ -69,6 +70,7 @@ router.post('/', function (req, res) {
           result.rows.forEach(function (row) {
             apiPromises.push(queryPhoton('celsius', row.id, row.access_token));
             apiPromises.push(queryPhoton('humidity', row.id, row.access_token));
+            console.log('device queried:', row.id);
           });
         }
       }
@@ -111,6 +113,7 @@ router.post('/', function (req, res) {
               }
             }
           });
+          console.log('at end of evaluation build, # of array elements:', evaluation.length);
 
           // hardcoded at present, make a variable in the future
           var setpoint = {
