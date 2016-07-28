@@ -259,6 +259,7 @@ function sendAlerts(queue) {
     console.log(options);
     request.post('http://textbelt.com/text', options,
       textCallback(err, res, phone));
+    console.log('passed new callback');
   }
 }
 
