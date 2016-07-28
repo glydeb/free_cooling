@@ -16,8 +16,8 @@ router.get('/:hash', function (req, res) {
       ' LEFT OUTER JOIN conditions on devices.id = conditions.device_id' +
       ' JOIN locations on devices.location_id = locations.id' +
       ' WHERE devices.hash = $1' +
-      ' LIMIT 100' +
-      ' ORDER BY date_time DESC',
+      ' ORDER BY date_time DESC' +
+      ' LIMIT 100',
       [hash],
       function (err, result) {
         done();
