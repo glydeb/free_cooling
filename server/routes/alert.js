@@ -219,7 +219,8 @@ router.post('/', function (req, res) {
 
                 // create alert if it doesn't exist, otherwise append to it.
                 if (existAlert) {
-                  alertQueue[element.phone_number].replace(/.$/,
+                  alertQueue[element.phone_number] =
+                    alertQueue[element.phone_number].replace(/\.$/,
                     alertString);
                 } else {
                   alertQueue[element.phone_number] = alertString;
