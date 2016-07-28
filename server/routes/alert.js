@@ -219,7 +219,7 @@ router.post('/', function (req, res) {
 
                 // create alert if it doesn't exist, otherwise append to it.
                 if (existAlert) {
-                  alertQueue[element.phone_number].replace(/\.$/,
+                  alertQueue[element.phone_number].replace(/.$/,
                     alertString);
                 } else {
                   alertQueue[element.phone_number] = alertString;
@@ -257,17 +257,13 @@ function sendAlerts(queue) {
       message: queue[phone]
     };
     console.log(options);
-    request.post('http://textbelt.com/text', options,
-      textCallback(err, res, phone));
-    console.log('passed new callback');
-  }
-}
-
-function textCallback (err, res, phone) {
-  if (err) {
-    console.log('Send failed', err);
-  } else {
-    console.log('alert sent to ' + phone);
+    request.post('http://textbelt.com/text', options, function (err, res) {
+      if (err) {
+        console.log('Send failed', err);
+      } else {
+        console.log('alert sent to ' + phone);
+      }
+    });
   }
 }
 
