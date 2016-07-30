@@ -41,4 +41,4 @@
 
   };
 
-})(typeof exports === 'undefined'? this.recommend={}: exports);
+})(typeof exports === 'undefined' ? this.recommend = {} : exports);
