@@ -143,6 +143,8 @@ router.post('/', function (req, res) {
                       Math.round(evaluation[j].outdoor.humidity * 100);
                     evaluation[j].outdoor.celsius =
                       (row.currently.temperature - 32) * 5 / 9;
+                    evaluation[j].timezone = row.timezone;
+                    evaluation[j].date_time = moment().tz(row.timezone);
                   }
                 }
 
@@ -194,7 +196,7 @@ router.post('/', function (req, res) {
                 ' indoor_rh, outdoor_temp, outdoor_rh, precip, recommend,' +
                 ' device_id)' +
                 ' VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
-                [new Date(), element.indoor.farenheit, element.indoor.rh,
+                [element.date_time, element.indoor.farenheit, element.indoor.rh,
                 element.outdoor.temperature, element.outdoor.humidity,
                 element.outdoor.precipProbability, newRecommend.recommendation, element.id],
                 function (err, result) {
@@ -207,7 +209,8 @@ router.post('/', function (req, res) {
 
               // compare to last recommendation, and push to alert queue
               // if different
-              if (newRecommend.recommendation !== element.recommend) {
+              if (newRecommend.recommendation !== element.recommend  &&
+                 checkAlertsEnabled(element)) {
                 console.log('change in recommendation found');
                 alertsFound = true;
                 evaluation[i].recommend = newRecommend.recommendation;
@@ -248,6 +251,11 @@ router.post('/', function (req, res) {
     res.sendStatus(200);
   });
 });
+
+function checkAlertsEnabled(element) {
+  return moment(element.date_time)
+    .isBetween(element.start_time, element.end_time);
+}
 
 function sendAlerts(queue) {
   var options = {};
