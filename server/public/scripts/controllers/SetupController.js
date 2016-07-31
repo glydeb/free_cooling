@@ -50,8 +50,20 @@ myApp.controller('SetupController', ['$scope', '$http', '$location', 'DataFactor
     $http.delete('/store/' + deviceID).then(function (response) {
       if (response.status == 204) {
         console.log('Device Removed');
-        // NEED TO ADD CLEARING FIELDS
-        
+        // Clear fields
+        $scope.setup.email = '';
+        $scope.setup.photonID = '';
+        $scope.setup.accessToken = '';
+        $scope.setup.nickname = '';
+        $scope.location.street = '';
+        $scope.location.city = '';
+        $scope.location.state = '';
+        $scope.location.zip = '';
+        $scope.phone = '';
+        $scope.enableAlert = false;
+        $scope.startBlock = '';
+        $scope.endBlock = '';
+
       } else {
         console.log('Got a success response but did not remove device',
           response.data);
@@ -91,9 +103,17 @@ myApp.controller('SetupController', ['$scope', '$http', '$location', 'DataFactor
       access_token: $scope.setup.accessToken,
       nickname: $scope.setup.nickname,
       allow_alerts: $scope.enableAlert,
-      startTime: toTime($scope.startBlock),
-      endTime: toTime($scope.endBlock)
     };
+
+      // If allow_alerts is true, set up the start & end block
+    if (allow_alerts && ($scope.startBlock >= 0 && $scope.startBlock < 24) &&
+       ($scope.endBlock >= 0 && $scope.endBlock < 24)) {
+      setup.startTime = toTime($scope.startBlock);
+      setup.endTime = toTime($scope.endBlock);
+    } else {
+      setup.startTime = null;
+      setup.endTime = null;
+    }
 
     console.log(setup);
 
@@ -123,6 +143,11 @@ myApp.controller('SetupController', ['$scope', '$http', '$location', 'DataFactor
           $scope.findLocationResult = 'Found! Photon is at: ';
           $scope.location.lat = response.data.results[0].geometry.location.lat;
           $scope.location.long = response.data.results[0].geometry.location.lng;
+          // round lat & long to 3 decimal places (roughly .3 km)
+          $scope.location.lat =
+            Math.round($scope.location.lat * 1000) / 1000;
+          $scope.location.long =
+            Math.round($scope.location.long * 1000) / 1000;
           // proceed to storing user/device information
           storeDevice();
         } else {
