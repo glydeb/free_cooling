@@ -47,6 +47,16 @@ myApp.controller('SetupController', ['$scope', '$http', '$location', 'DataFactor
   };
 
   $scope.removeDevice = function (deviceID) {
+    $http.delete('/store/' + deviceID).then(function (response) {
+      if (response.status == 204) {
+        console.log('Device Removed');
+        // NEED TO ADD CLEARING FIELDS
+        
+      } else {
+        console.log('Got a success response but did not remove device',
+          response.data);
+      }
+    });
 
   };
 

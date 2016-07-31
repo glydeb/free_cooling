@@ -30,6 +30,38 @@ pg.connect(process.env.DATABASE_URL, function (err, client, done) {
     });
 });
 
+router.delete('/:id', function (req, res) {
+  var deviceID = req.params.id;
+
+  pg.connect(process.env.DATABASE_URL || connectionString, function (err, client, done) {
+    if (err) {
+      res.sendStatus(500);
+    }
+    client.query('DELETE from conditions' +
+      ' WHERE device_id = $1', [deviceID],
+      function (err, result) {
+        if (err) {
+          res.sendStatus(500);
+          return;
+        }
+
+        client.query('DELETE from devices' +
+          ' WHERE id = $1', [deviceID],
+          function (err, result) {
+            done();
+            if (err) {
+              res.sendStatus(500);
+              return;
+            }
+
+            res.sendStatus(204);
+          }
+        );
+      }
+    );
+  });
+});
+
 router.post('/', function (req, res) {
   var setup = req.body;
 

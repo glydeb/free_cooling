@@ -59,7 +59,9 @@
       </div>
       <div class="row">
         <button ng-click="submitAndTest()">Submit and Test</button>
-        <button ng-show="stored" ng-click="removeDevice(deviceID)">Remove Device</button>
+        <button ng-show="stored" ng-click="removeDevice(setup.photonID)">
+          Remove Device
+        </button>
       </div>
     </form>
     <div class="row">
