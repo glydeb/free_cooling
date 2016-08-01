@@ -4,7 +4,6 @@ var pg = require('pg');
 var Particle = require('particle-api-js');
 var particle = new Particle();
 var request = require('request');
-var moment = require('moment');
 var recommend = require('../public/scripts/recommend');
 var calc = require('../public/scripts/calc');
 var Forecast = require('forecast.io-bluebird');
@@ -143,8 +142,8 @@ router.post('/', function (req, res) {
                       Math.round(evaluation[j].outdoor.humidity * 100);
                     evaluation[j].outdoor.celsius =
                       (row.currently.temperature - 32) * 5 / 9;
-                    evaluation[j].timezone = row.timezone;
-                    evaluation[j].date_time = moment().tz(row.timezone);
+                    evaluation[j].offset = row.offset;
+                    evaluation[j].date_time = new Date();
                   }
                 }
 
@@ -253,8 +252,16 @@ router.post('/', function (req, res) {
 });
 
 function checkAlertsEnabled(element) {
-  return moment(element.date_time)
-    .isBetween(element.start_time, element.end_time);
+  var start = timeToHour(element.start_time);
+  var end = timeToHour(element.end_time);
+  if (end < start) { end += 24; }
+  var current = element.date_time.getHours() + element.offset;
+  if (current < start) { current += 24; }
+  return (current < end);
+}
+
+function timeToHour(time) {
+  return parseInt(time.substr(0,2).replace(/^0/,''));
 }
 
 function sendAlerts(queue) {
@@ -266,13 +273,15 @@ function sendAlerts(queue) {
       message: queue[phone]
     };
     console.log(options);
-    request.post('http://textbelt.com/text', options, function (err, res) {
-      if (err) {
-        console.log('Send failed', err);
-      } else {
-        console.log('alert sent to ' + phone);
-      }
-    });
+    request.post('http://textbelt.com/text', options, alertsSent);
+  }
+}
+
+function alertsSent (err, res) {
+  if (err) {
+    console.log('Send failed', err);
+  } else {
+    console.log('alert sent:', res);
   }
 }
 
