@@ -242,6 +242,12 @@ router.post('/', function (req, res) {
             apiPromises = [];
             console.log('evaluation and apiPromises arrays cleared');
 
+          // handle zeroing out arrays if the promise.all ends with error
+          }, function(err) {
+            // zero out evaluation & apiPromises arrays for next run through
+            evaluation = [];
+            apiPromises = [];
+            console.log('evaluation and apiPromises arrays cleared after error');
           });
 
         }
