@@ -129,30 +129,24 @@ router.put('/', function (req, res) {
           return;
         }
         var location_id = result.rows[0].location_id;
+        client.query('UPDATE locations ' +
+          'SET street_address = $1, city = $2, state = $3, zip = $4, ' +
+          ' latitude = $5, longitude = $6' +
+          ' WHERE id = $7', [setup.address, setup.city, setup.state, setup.zip,
+            setup.lat, setup.long, location_id],
+          function (err, result) {
+
+            if (err) {
+              done();
+              res.sendStatus(500);
+              return;
+            }
+
+
       });
 
 
-    client.query('UPDATE locations ' +
-      'SET street_address = $1, city = $2, state = $3, zip = $4, ' +
-      ' latitude = $5, longitude = $6' +
-      ' WHERE ', [setup.address,
-      setup.city, setup.state, setup.zip, setup.lat, setup.long],
-      function (err, result) {
-
-        if (err) {
-          done();
-          res.sendStatus(500);
-          return;
-        }
-
-        console.log(result);
-        var location = result.rows[0].id;
-        if (setup.phone !== undefined) {
-          if (setup.startTime === undefined) {
-            setup.startTime = null;
-            setup.endTime = null;
-          }
-          client.query('INSERT INTO phones (phone_number, allow_alerts, ' +
+        client.query('INSERT INTO phones (phone_number, allow_alerts, ' +
             ' start_time, end_time)' +
             'VALUES ($1, $2, $3, $4)', [setup.phone, setup.allow_alerts,
             setup.startTime, setup.endTime],
