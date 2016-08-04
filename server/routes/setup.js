@@ -72,7 +72,70 @@ router.post('/', function (req, res) {
 
     client.query('INSERT INTO locations (street_address, city, state, zip, ' +
       ' latitude, longitude)' +
-      'VALUES ($1, $2, $3, $4, $5, $6) returning id', [setup.address,
+      'VALUES ($1, $2, $3, $4, $5, $6) RETURNING id', [setup.address,
+      setup.city, setup.state, setup.zip, setup.lat, setup.long],
+      function (err, result) {
+
+        if (err) {
+          done();
+          res.sendStatus(500);
+          return;
+        }
+
+        console.log(result);
+        var location = result.rows[0].id;
+        if (setup.phone !== undefined) {
+          if (setup.startTime === undefined) {
+            setup.startTime = null;
+            setup.endTime = null;
+          }
+          client.query('INSERT INTO phones (phone_number, allow_alerts, ' +
+            ' start_time, end_time)' +
+            'VALUES ($1, $2, $3, $4)', [setup.phone, setup.allow_alerts,
+            setup.startTime, setup.endTime],
+            function (err, result) {
+
+              if (err) {
+                done();
+                res.sendStatus(500);
+                return;
+              }
+
+              devicesInsert(client, done, location, setup, res);
+            });
+        } else {
+          devicesInsert(client, done, location, setup, res);
+        }
+      }
+    );
+  });
+});
+
+router.put('/', function (req, res) {
+  var setup = req.body;
+
+  pg.connect(process.env.DATABASE_URL || connectionString, function (err, client, done) {
+    if (err) {
+      res.sendStatus(500);
+    }
+
+    client.query('SELECT location_id FROM devices ' +
+      ' WHERE id = $1', [setup.device_id],
+      function (err, result) {
+
+        if (err) {
+          done();
+          res.sendStatus(500);
+          return;
+        }
+        var location_id = result.rows[0].location_id;
+      });
+
+
+    client.query('UPDATE locations ' +
+      'SET street_address = $1, city = $2, state = $3, zip = $4, ' +
+      ' latitude = $5, longitude = $6' +
+      ' WHERE ', [setup.address,
       setup.city, setup.state, setup.zip, setup.lat, setup.long],
       function (err, result) {
 
