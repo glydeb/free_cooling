@@ -141,22 +141,40 @@ router.put('/', function (req, res) {
               res.sendStatus(500);
               return;
             }
+        });
+
+        client.query('SELECT phone_number FROM phones' +
+          ' WHERE phone_number = $1', [setup.phone],
+          function(err, result) {
+            if (err) {
+              done();
+              res.sendStatus(500);
+              return;
+            }
+
+            if (result.rows[0] !== undefined) {
+              // if the phone number exists, update it
+            } else {
+              // if the phone number doesn't exist, create it
+            }
+          }
+
+        );
 
 
       });
 
 
-        client.query('INSERT INTO phones (phone_number, allow_alerts, ' +
-            ' start_time, end_time)' +
-            'VALUES ($1, $2, $3, $4)', [setup.phone, setup.allow_alerts,
-            setup.startTime, setup.endTime],
-            function (err, result) {
+        client.query('UPDATE phones SET allow_alerts = $1, start_time = $2,' +
+          ' end_time = $3 WHERE phone_number = $4', [setup.phone,
+          setup.allow_alerts, setup.startTime, setup.endTime],
+          function (err, result) {
 
-              if (err) {
-                done();
-                res.sendStatus(500);
-                return;
-              }
+            if (err) {
+              done();
+              res.sendStatus(500);
+              return;
+            }
 
               devicesInsert(client, done, location, setup, res);
             });
