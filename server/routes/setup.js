@@ -143,67 +143,59 @@ router.put('/', function (req, res) {
             }
         });
 
-        client.query('SELECT phone_number FROM phones' +
-          ' WHERE phone_number = $1', [setup.phone],
+        if (setup.phone) {
+          client.query('SELECT phone_number FROM phones' +
+            ' WHERE phone_number = $1', [setup.phone],
+            function(err, result) {
+              if (err) {
+                done();
+                res.sendStatus(500);
+                return;
+              }
+
+              if (result.rows[0] !== undefined) {
+                // if the phone number exists, update it
+                client.query('UPDATE phones SET allow_alerts = $1,' +
+                  'start_time = $2, end_time = $3 ' +
+                  'WHERE phone_number = $4', [setup.allow_alerts,
+                  setup.startTime, setup.endTime, setup.phone],
+                  function(err, result) {
+                    if (err) {
+                      done();
+                      res.sendStatus(500);
+                      return;
+                    }
+                });
+
+              } else {
+                // if the phone number doesn't exist, create it
+                client.query('INSERT INTO phones ' +
+                  '(phone_number, allow_alerts, start_time, end_time)' +
+                  ' VALUES ($1, $2, $3, $4)', [setup.phone, setup.allow_alerts,
+                  setup.startTime, setup.endTime],
+                  function(err, result) {
+                    if (err) {
+                      done();
+                      res.sendStatus(500);
+                      return;
+                    }
+                });
+              }
+            }
+
+          );
+        }
+
+        client.query('UPDATE devices ' +
+          'SET nickname = $1, phone_number = $2, email = $3',
+          [setup.nickname, setup.phone, setup.email],
           function(err, result) {
             if (err) {
               done();
               res.sendStatus(500);
               return;
             }
-
-            if (result.rows[0] !== undefined) {
-              // if the phone number exists, update it
-              client.query('UPDATE phones SET allow_alerts = $1,' +
-                'start_time = $2, end_time = $3 ' +
-                'WHERE phone_number = $4', [setup.allow_alerts,
-                setup.startBlock, setup.endBlock, setup.phone],
-                function(err, result) {
-                  if (err) {
-                    done();
-                    res.sendStatus(500);
-                    return;
-                  }
-              });
-
-            } else {
-              // if the phone number doesn't exist, create it
-              client.query('INSERT INTO phones (phone_number, allow_alerts, ' +
-                ' start_time, end_time)' +
-                'VALUES ($1, $2, $3, $4)', [setup.phone, setup.allow_alerts,
-                setup.startTime, setup.endTime],
-                function(err, result) {
-                  if (err) {
-                    done();
-                    res.sendStatus(500);
-                    return;
-                  }
-              });
-            }
-          }
-
-        );
-
-
-      });
-
-
-        client.query('UPDATE phones SET allow_alerts = $1, start_time = $2,' +
-          ' end_time = $3 WHERE phone_number = $4', [setup.phone,
-          setup.allow_alerts, setup.startTime, setup.endTime],
-          function (err, result) {
-
-            if (err) {
-              done();
-              res.sendStatus(500);
-              return;
-            }
-
-              devicesInsert(client, done, location, setup, res);
-            });
-        } else {
-          devicesInsert(client, done, location, setup, res);
-        }
+        });
       }
     );
   });

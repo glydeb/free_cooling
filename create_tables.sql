@@ -1,4 +1,4 @@
-﻿-- CREATE ANIMALS TABLE --
+﻿-- CREATE DATA TABLES --
 CREATE TABLE locations (
 	id SERIAL PRIMARY KEY,
 	street_address varchar(200),
