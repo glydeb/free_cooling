@@ -8,13 +8,19 @@
               <label for="email">Email:</label>
               <input type="text" name="email" maxlength="254" ng-model="setup.email" />
             </p>
-            <p>
+            <p ng-hide="stored">
               <label for="photonID">photon ID:</label>
               <input type="text" name="photonID" maxlength="24" ng-model="setup.photonID" />
             </p>
-            <p>
+            <p ng-show="stored">
+              photon ID: {{setup.photonID}}
+            </p>
+            <p ng-hide="stored">
               <label for="accessToken">Access Token:</label>
               <input type="text" name="accessToken" maxlength="40" ng-model="setup.accessToken" />
+            </p>
+            <p ng-show="stored">
+              photon ID: {{setup.accessToken}}
             </p>
             <p>
               <label for="nickname">Nickname:</label>
