@@ -15,7 +15,8 @@
       output.reason = 'Rain predicted';
     }
 
-    if (outdoor.absHumidity > setpoint.wetLimit) {
+    if (outdoor.absHumidity > setpoint.wetLimit &&
+        indoor.absHumidity > setpoint.wetLimit) {
       output.recommendation = 'Closed';
       output.reason = 'Too humid outside';
     }
@@ -26,7 +27,8 @@
       output.reason = 'Too dry outside';
     }
 
-    if (outdoor.celsius > setpoint.highLimit) {
+    if (outdoor.celsius > setpoint.highLimit ||
+      outdoor.celsius > indoor.celsius) {
       output.recommendation = 'Closed';
       output.reason = 'Too hot outside';
     }
