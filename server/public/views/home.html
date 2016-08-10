@@ -12,6 +12,7 @@
               <label for="photonID">photon ID:</label>
               <input type="text" name="photonID" maxlength="24" ng-model="setup.photonID" />
             </p>
+            <!-- make photonID static if device exists in the database -->
             <p ng-show="stored">
               photon ID: {{setup.photonID}}
             </p>
@@ -19,6 +20,7 @@
               <label for="accessToken">Access Token:</label>
               <input type="text" name="accessToken" maxlength="40" ng-model="setup.accessToken" />
             </p>
+            <!-- make accessToken static if device exists in the database -->
             <p ng-show="stored">
               Access Token: {{setup.accessToken}}
             </p>
