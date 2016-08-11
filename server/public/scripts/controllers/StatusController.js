@@ -1,6 +1,5 @@
-myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', 'DataFactory', function ($scope, $http, $location, $q, DataFactory) {
+myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', function ($scope, $http, $location, $q) {
   console.log('StatusController online');
-  $scope.dataFactory = DataFactory;
   $scope.indoor = {};
   $scope.outdoor = {};
   console.log($location.search());

@@ -1,4 +1,4 @@
-myApp.controller('ReminderController', ['$scope', '$http', 'DataFactory', function ($scope, $http, DataFactory) {
+myApp.controller('ReminderController', ['$scope', '$http', function ($scope, $http) {
   console.log('ReminderController online');
   $scope.reminder = {};
 

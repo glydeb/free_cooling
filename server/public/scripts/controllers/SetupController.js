@@ -1,7 +1,7 @@
-myApp.controller('SetupController', ['$scope', '$http', '$location', 'DataFactory', function ($scope, $http, $location, DataFactory) {
+myApp.controller('SetupController', ['$scope', '$http', '$location',
+  function ($scope, $http, $location) {
   console.log('SetupController online');
-  $scope.dataFactory = DataFactory;
-  $scope.fullDay = $scope.dataFactory.factoryHourArray();
+  $scope.fullDay = create12HrArray(' AM', 1).concat(create12HrArray(' PM', 13));
   $scope.setup = {};
   $scope.location = {};
 
@@ -84,6 +84,16 @@ myApp.controller('SetupController', ['$scope', '$http', '$location', 'DataFactor
 
     time += ':00:00';
     return time;
+  }
+
+  function create12HrArray(postfix, startHour) {
+    var halfDayList = [];
+    for (var j = 1; j < 12; j++) {
+      halfDayList.push({ hour: (j + startHour - 1), label: j + postfix });
+    }
+
+    halfDayList.unshift({ hour: (startHour - 1), label: 12 + postfix });
+    return halfDayList;
   }
 
   function storeDevice() {
