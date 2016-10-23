@@ -145,7 +145,7 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', func
     var request = baseURL + encodeURI(query);
 
     // Request temperature from device
-    return $http.get(request);
+    return $http.post(request);
 
   }
 
