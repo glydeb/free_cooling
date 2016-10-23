@@ -116,7 +116,7 @@ myApp.controller('SetupController', ['$scope', '$http', '$location',
     };
 
       // If allow_alerts is true, set up the start & end block
-    if (allow_alerts && ($scope.startBlock >= 0 && $scope.startBlock < 24) &&
+    if (setup.allow_alerts && ($scope.startBlock >= 0 && $scope.startBlock < 24) &&
        ($scope.endBlock >= 0 && $scope.endBlock < 24)) {
       setup.startTime = toTime($scope.startBlock);
       setup.endTime = toTime($scope.endBlock);
