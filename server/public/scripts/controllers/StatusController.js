@@ -138,15 +138,18 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', func
 
     // Formulate request to device
     var query = photonID;
-    query += '/' + photonFunction + '?access_token=';
-    query += accessToken + '&params=';
-    query += photonCommand;
+    query += '/' + photonFunction;
+
+    params = {
+      access_token: accessToken,
+      params: photonCommand
+    };
 
     var request = baseURL + encodeURI(query);
 
     // Request temperature from device
     console.log('sent get request:', request);
-    return $http.get(request);
+    return $http.post(request, params);
 
   };
 
