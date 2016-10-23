@@ -132,6 +132,23 @@ myApp.controller('StatusController', ['$scope', '$http', '$location', '$q', func
 
   }
 
+  $scope.directPhoton = function (photonFunction, photonCommand) {
+    // Assemble request to paritcle API
+    var baseURL = 'https://api.particle.io/v1/devices/';
+
+    // Formulate request to device
+    var query = photonID;
+    query += '/' + photonFunction + '?access_token=';
+    query += accessToken + '&params=';
+    query += photonCommand;
+
+    var request = baseURL + encodeURI(query);
+
+    // Request temperature from device
+    return $http.get(request);
+
+  }
+
 }]);
 
 function roundToDecimals(num, decimals) {
